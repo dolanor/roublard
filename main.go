@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log/slog"
 	"time"
 
 	"github.com/g3n/engine/app"
@@ -20,62 +21,83 @@ import (
 
 func main() {
 	a := app.App()
-	scene := core.NewNode()
 
-	gui.Manager().Set(scene)
+	scene := core.NewNode()
 
 	cam := camera.New(1)
 	cam.SetPosition(0, 0, 3)
-
-	scene.Add(cam)
-
 	camera.NewOrbitControl(cam)
 
-	onResize := func(evname string, ev any) {
-		w, h := a.GetSize()
-		a.Gls().Viewport(0, 0, int32(w), int32(h))
-		cam.SetAspect(float32(w) / float32(h))
-	}
+	g := NewGame(a, scene, cam, slog.Default())
 
-	a.Subscribe(window.OnWindowSize, onResize)
-	onResize("", nil)
+	a.Run(g.Update)
+}
 
-	geom := geometry.NewTorus(1, .4, 12, 32, math32.Pi*2)
+type Game struct {
+	app   *app.Application
+	scene *core.Node
+	cam   *camera.Camera
+
+	log *slog.Logger
+}
+
+func NewGame(app *app.Application, scene *core.Node, cam *camera.Camera, log *slog.Logger) *Game {
+	const tileSideLength = 1.5
+
+	// create a tile
+	geom := geometry.NewBox(tileSideLength, .1, tileSideLength)
 	mat := material.NewStandard(math32.NewColor("DarkBlue"))
 	mesh := graphic.NewMesh(geom, mat)
-	scene.Add(mesh)
 
+	// create a button
 	btn := gui.NewButton("Make Red")
 	btn.SetPosition(100, 40)
 	btn.SetSize(40, 40)
 	btn.Subscribe(gui.OnClick, func(name string, ev any) {
 		mat.SetColor(math32.NewColor("DarkRed"))
 	})
-	scene.Add(btn)
 
-	scene.Add(light.NewAmbient(&math32.Color{1, 1, 1}, .8))
+	app.Gls().ClearColor(.5, .5, .5, 1)
+
+	onResize := func(evname string, ev any) {
+		w, h := app.GetSize()
+		app.Gls().Viewport(0, 0, int32(w), int32(h))
+		cam.SetAspect(float32(w) / float32(h))
+	}
+
+	app.Subscribe(window.OnWindowSize, onResize)
+	onResize("", nil)
+
+	// add a point light
 	pointLight := light.NewPoint(&math32.Color{1, 1, 1}, 5)
 	pointLight.SetPosition(1, 0, 2)
-	scene.Add(pointLight)
 
+	gui.Manager().Set(scene)
+
+	// add everything to the scene
+	scene.Add(btn)
+	scene.Add(light.NewAmbient(&math32.Color{1, 1, 1}, .8))
+	scene.Add(cam)
+	scene.Add(mesh)
+	scene.Add(pointLight)
 	scene.Add(helper.NewAxes(0.5))
 
-	a.Gls().ClearColor(.5, .5, .5, 1)
-
-	a.Run(func(renderer *renderer.Renderer, deltaTime time.Duration) {
-		a.Gls().Clear(gls.DEPTH_BUFFER_BIT | gls.STENCIL_BUFFER_BIT | gls.COLOR_BUFFER_BIT)
-		renderer.Render(scene, cam)
-	})
+	return &Game{
+		app:   app,
+		scene: scene,
+		cam:   cam,
+		log:   log,
+	}
 }
 
-type Game struct{}
+func (g *Game) Update(renderer *renderer.Renderer, deltaTime time.Duration) {
+	log := g.log.With("func", "update")
+	g.app.Gls().Clear(gls.DEPTH_BUFFER_BIT | gls.STENCIL_BUFFER_BIT | gls.COLOR_BUFFER_BIT)
 
-func NewGame() *Game {
-	return &Game{}
-}
-
-func (g *Game) Update() error {
-	return nil
+	err := renderer.Render(g.scene, g.cam)
+	if err != nil {
+		log.Error("render", "error", err)
+	}
 }
 
 func (g *Game) Layout(w, h int) (int, int) {
