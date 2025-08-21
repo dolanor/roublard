@@ -2,13 +2,11 @@ module github.com/dolanor/roublard
 
 go 1.24.6
 
-require github.com/hajimehoshi/ebiten/v2 v2.8.8
+require github.com/g3n/engine v0.2.0
 
 require (
-	github.com/ebitengine/gomobile v0.0.0-20250329061421-6d0a8e981e4c // indirect
-	github.com/ebitengine/hideconsole v1.0.0 // indirect
-	github.com/ebitengine/purego v0.9.0-alpha.10 // indirect
-	github.com/jezek/xgb v1.1.1 // indirect
-	golang.org/x/sync v0.16.0 // indirect
-	golang.org/x/sys v0.35.0 // indirect
+	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20210410170116-ea3d685f79fb // indirect
+	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
+	golang.org/x/image v0.25.0 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
