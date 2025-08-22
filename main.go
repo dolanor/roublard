@@ -10,6 +10,7 @@ import (
 	"github.com/g3n/engine/gls"
 	"github.com/g3n/engine/gui"
 	"github.com/g3n/engine/light"
+	"github.com/g3n/engine/loader/gltf"
 	"github.com/g3n/engine/math32"
 	"github.com/g3n/engine/renderer"
 	"github.com/g3n/engine/window"
@@ -67,6 +68,25 @@ func NewGame(app *app.Application, scene *core.Node, cam *camera.Camera, log *sl
 	scene.Add(light.NewAmbient(&math32.Color{1, 1, 1}, .8))
 	scene.Add(pointLight)
 	scene.Add(cam)
+
+	model, err := gltf.ParseBin("assets/elf-wizard.glb")
+	if err != nil {
+		panic(err)
+	}
+	log.Info("load model", "len(meshes)", len(model.Meshes))
+
+	mesh, err := model.LoadMesh(0)
+	if err != nil {
+		panic(err)
+	}
+
+	meshNode := mesh.GetNode()
+	meshNode.SetScale(0.01, 0.01, 0.01)
+	meshNode.SetPosition(10, 1, 5)
+
+	log.Info("elf wizard", "scale", mesh.Scale())
+
+	scene.Add(mesh)
 
 	return &Game{
 		app:   app,
