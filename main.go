@@ -7,15 +7,11 @@ import (
 	"github.com/g3n/engine/app"
 	"github.com/g3n/engine/camera"
 	"github.com/g3n/engine/core"
-	"github.com/g3n/engine/geometry"
 	"github.com/g3n/engine/gls"
-	"github.com/g3n/engine/graphic"
 	"github.com/g3n/engine/gui"
 	"github.com/g3n/engine/light"
-	"github.com/g3n/engine/material"
 	"github.com/g3n/engine/math32"
 	"github.com/g3n/engine/renderer"
-	"github.com/g3n/engine/util/helper"
 	"github.com/g3n/engine/window"
 )
 
@@ -37,26 +33,12 @@ type Game struct {
 	app   *app.Application
 	scene *core.Node
 	cam   *camera.Camera
+	tiles []Tile
 
 	log *slog.Logger
 }
 
 func NewGame(app *app.Application, scene *core.Node, cam *camera.Camera, log *slog.Logger) *Game {
-	const tileSideLength = 1.5
-
-	// create a tile
-	geom := geometry.NewBox(tileSideLength, .1, tileSideLength)
-	mat := material.NewStandard(math32.NewColor("DarkBlue"))
-	mesh := graphic.NewMesh(geom, mat)
-
-	// create a button
-	btn := gui.NewButton("Make Red")
-	btn.SetPosition(100, 40)
-	btn.SetSize(40, 40)
-	btn.Subscribe(gui.OnClick, func(name string, ev any) {
-		mat.SetColor(math32.NewColor("DarkRed"))
-	})
-
 	app.Gls().ClearColor(.5, .5, .5, 1)
 
 	onResize := func(evname string, ev any) {
@@ -74,18 +56,21 @@ func NewGame(app *app.Application, scene *core.Node, cam *camera.Camera, log *sl
 
 	gui.Manager().Set(scene)
 
+	tiles := CreateTiles()
+	for _, t := range tiles {
+		scene.Add(t.Mesh)
+	}
+
 	// add everything to the scene
-	scene.Add(btn)
 	scene.Add(light.NewAmbient(&math32.Color{1, 1, 1}, .8))
-	scene.Add(cam)
-	scene.Add(mesh)
 	scene.Add(pointLight)
-	scene.Add(helper.NewAxes(0.5))
+	scene.Add(cam)
 
 	return &Game{
 		app:   app,
 		scene: scene,
 		cam:   cam,
+		tiles: tiles,
 		log:   log,
 	}
 }
