@@ -54,7 +54,7 @@ func NewGame(app *app.Application, scene *core.Node, cam *camera.Camera, log *sl
 
 	// add a point light
 	pointLight := light.NewPoint(&math32.Color{1, 1, 1}, 5)
-	pointLight.SetPosition(1, 0, 2)
+	pointLight.SetPosition(1, 1, 2)
 
 	gui.Manager().Set(scene)
 
