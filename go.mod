@@ -2,7 +2,7 @@ module github.com/dolanor/roublard
 
 go 1.24.6
 
-require github.com/g3n/engine v0.2.0
+require github.com/g3n/engine v0.2.1-0.20250208134444-e38dc0aa3f06
 
 require (
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20210410170116-ea3d685f79fb // indirect

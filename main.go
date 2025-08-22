@@ -20,7 +20,7 @@ import (
 )
 
 func main() {
-	a := app.App()
+	a := app.App(1280, 800, "Roublard")
 
 	scene := core.NewNode()
 
