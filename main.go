@@ -65,7 +65,7 @@ func NewGame(app *app.Application, scene *core.Node, cam *camera.Camera, log *sl
 	}
 
 	// add everything to the scene
-	scene.Add(light.NewAmbient(&math32.Color{1, 1, 1}, .8))
+	//scene.Add(light.NewAmbient(&math32.Color{1, 1, 1}, .8))
 	scene.Add(pointLight)
 	scene.Add(cam)
 
