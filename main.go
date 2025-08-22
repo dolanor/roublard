@@ -20,9 +20,11 @@ func main() {
 
 	scene := core.NewNode()
 
-	cam := camera.New(1)
-	cam.SetPosition(0, 0, 3)
-	camera.NewOrbitControl(cam)
+	cam := camera.New(0)
+	cam.SetPosition(40, 50, 25)
+	ctl := camera.NewOrbitControl(cam)
+	ctl.SetTarget(math32.Vector3{40, 0, 25})
+	//cam.SetDirection(110, 10, -100)
 
 	g := NewGame(a, scene, cam, slog.Default())
 
