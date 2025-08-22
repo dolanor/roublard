@@ -111,7 +111,8 @@ func NewFloorTile(x, y int) *graphic.Mesh {
 	mat := material.NewStandard(color)
 	tex := assets.Floor()
 	mat.AddTexture(tex)
-	mesh := graphic.NewMesh(geom, mat)
+	mesh := graphic.NewMesh(geom, nil)
+	mesh.AddGroupMaterial(mat, 2)
 
 	mesh.SetPosition(float32(x), 0, float32(y))
 	return mesh
