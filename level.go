@@ -5,6 +5,8 @@ import (
 	"github.com/g3n/engine/graphic"
 	"github.com/g3n/engine/material"
 	"github.com/g3n/engine/math32"
+
+	"github.com/dolanor/roublard/assets"
 )
 
 type GameData struct {
@@ -71,27 +73,44 @@ func CreateTiles() []Tile {
 const tileSideLength = 1
 
 func NewWallTile(x, y int) *graphic.Mesh {
-	geom := geometry.NewBox(tileSideLength, .1, tileSideLength)
-	color := math32.NewColor("DarkBlue")
-	// FIXME: use a variable instead of magic number
-	color.R = float32(x) / 80
-	color.G = float32(y) / 50
-
+	height := float32(3)
+	geom := geometry.NewBox(tileSideLength, height, tileSideLength)
+	color := math32.NewColor("White")
 	mat := material.NewStandard(color)
+	// FIXME: remove once camera is debugged
+	//color.R = float32(x) / 80
+	//color.G = float32(y) / 50
+
+	//mat := material.NewPhysical()
+	//var eg errgroup.Group
+	//eg.Go(func() error { mat.SetEmissiveFactor(math32.NewColor("white")); return nil })
+	//eg.Go(func() error { mat.SetBaseColorMap(textures.WoodInlaidDiffuse()); return nil })
+	//eg.Go(func() error { mat.SetMetallicRoughnessMap(textures.WoodInlaidRough()); return nil })
+	//eg.Go(func() error { mat.SetNormalMap(textures.WoodInlaidNormal()); return nil })
+
+	//err := eg.Wait()
+	//if err != nil {
+	//	panic(err)
+	//}
+
+	tex := assets.Wall()
+	mat.AddTexture(tex)
 	mesh := graphic.NewMesh(geom, mat)
 
-	mesh.SetPosition(float32(x), 0, float32(y))
+	mesh.SetPosition(float32(x), float32(height/2), float32(y))
 	return mesh
 }
 
 func NewFloorTile(x, y int) *graphic.Mesh {
 	geom := geometry.NewBox(tileSideLength, .1, tileSideLength)
-	color := math32.NewColor("DarkRed")
-	// FIXME: use a variable instead of magic number
-	color.R = float32(x) / 80
-	color.G = float32(y) / 50
+	color := math32.NewColor("White")
+	// FIXME: remove once camera is debugged
+	//color.R = float32(x) / 80
+	//color.G = float32(y) / 50
 
 	mat := material.NewStandard(color)
+	tex := assets.Floor()
+	mat.AddTexture(tex)
 	mesh := graphic.NewMesh(geom, mat)
 
 	mesh.SetPosition(float32(x), 0, float32(y))
