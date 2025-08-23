@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"time"
 
+	"github.com/bytearena/ecs"
 	"github.com/g3n/engine/app"
 	"github.com/g3n/engine/camera"
 	"github.com/g3n/engine/core"
@@ -33,10 +34,13 @@ func main() {
 }
 
 type Game struct {
-	app     *app.Application
-	scene   *core.Node
-	cam     *camera.Camera
-	gameMap GameMap
+	app   *app.Application
+	scene *core.Node
+	cam   *camera.Camera
+
+	gameMap   GameMap
+	World     *ecs.Manager
+	WorldTags map[string]ecs.Tag
 
 	log *slog.Logger
 }
@@ -89,12 +93,18 @@ func NewGame(app *app.Application, scene *core.Node, cam *camera.Camera, log *sl
 
 	scene.Add(mesh)
 
+	world, tags := InitWorld()
+
 	return &Game{
-		app:     app,
-		scene:   scene,
-		cam:     cam,
-		gameMap: gm,
-		log:     log,
+		app:   app,
+		scene: scene,
+		cam:   cam,
+
+		gameMap:   gm,
+		World:     world,
+		WorldTags: tags,
+
+		log: log,
 	}
 }
 
