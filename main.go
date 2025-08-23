@@ -33,10 +33,10 @@ func main() {
 }
 
 type Game struct {
-	app   *app.Application
-	scene *core.Node
-	cam   *camera.Camera
-	tiles []Tile
+	app     *app.Application
+	scene   *core.Node
+	cam     *camera.Camera
+	gameMap GameMap
 
 	log *slog.Logger
 }
@@ -58,8 +58,8 @@ func NewGame(app *app.Application, scene *core.Node, cam *camera.Camera, log *sl
 	pointLight.SetPosition(1, 1, 2)
 
 	gui.Manager().Set(scene)
-
-	tiles := CreateTiles()
+	gm := NewGameMap()
+	tiles := gm.Dungeons[0].Levels[0].Tiles
 	for _, t := range tiles {
 		scene.Add(t.Mesh)
 	}
@@ -90,11 +90,11 @@ func NewGame(app *app.Application, scene *core.Node, cam *camera.Camera, log *sl
 	scene.Add(mesh)
 
 	return &Game{
-		app:   app,
-		scene: scene,
-		cam:   cam,
-		tiles: tiles,
-		log:   log,
+		app:     app,
+		scene:   scene,
+		cam:     cam,
+		gameMap: gm,
+		log:     log,
 	}
 }
 
