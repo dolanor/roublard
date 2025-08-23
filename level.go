@@ -37,7 +37,7 @@ func (l *Level) GetIndexFromXY(x, y int) int {
 
 func (l *Level) CreateTiles() []Tile {
 	gd := NewGameData()
-	tiles := []Tile{}
+	tiles := make([]Tile, 0, gd.ScreenHeight*gd.ScreenWidth)
 
 	for x := range gd.ScreenWidth {
 		for y := range gd.ScreenHeight {
