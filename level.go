@@ -20,12 +20,24 @@ type Tile struct {
 	Mesh    *graphic.Mesh
 }
 
-func GetIndexFromXY(x, y int) int {
+type Level struct {
+	Tiles []Tile
+}
+
+func NewLevel() Level {
+	l := Level{}
+	tiles := l.CreateTiles()
+	l.Tiles = tiles
+
+	return l
+}
+
+func (l *Level) GetIndexFromXY(x, y int) int {
 	gd := NewGameData()
 	return (y * gd.ScreenWidth) + x
 }
 
-func CreateTiles() []Tile {
+func (l *Level) CreateTiles() []Tile {
 	gd := NewGameData()
 	tiles := []Tile{}
 
