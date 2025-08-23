@@ -108,5 +108,6 @@ func (g *Game) Update(renderer *renderer.Renderer, deltaTime time.Duration) {
 }
 
 func (g *Game) Layout(w, h int) (int, int) {
-	return 1280, 800
+	gd := NewGameData()
+	return gd.TileWidth * gd.ScreenWidth, gd.TileHeight * gd.ScreenHeight
 }
