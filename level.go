@@ -59,6 +59,7 @@ func CreateTiles() []Tile {
 }
 
 const tileSideLength = 1
+const tileHeight = 0.1
 
 var once sync.Once
 var mat material.IMaterial
@@ -106,7 +107,7 @@ func NewWallTile(x, y int) *graphic.Mesh {
 }
 
 func NewFloorTile(x, y int) *graphic.Mesh {
-	geom := geometry.NewBox(tileSideLength, .1, tileSideLength)
+	geom := geometry.NewBox(tileSideLength, tileHeight, tileSideLength)
 	color := math32.NewColor("White")
 	// FIXME: remove once camera is debugged
 	//color.R = float32(x) / 80
