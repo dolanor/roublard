@@ -82,7 +82,8 @@ func NewGame(app *app.Application, scene *core.Node, cam *camera.Camera, log *sl
 
 	meshNode := mesh.GetNode()
 	meshNode.SetScale(0.01, 0.01, 0.01)
-	meshNode.SetPosition(10, 1, 5)
+	// depends on the model size I suppose
+	meshNode.SetPosition(3, 0.7+tileHeight, 2)
 
 	log.Info("elf wizard", "scale", mesh.Scale())
 
