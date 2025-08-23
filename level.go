@@ -1,8 +1,12 @@
 package main
 
 import (
+	"log/slog"
+	"sync"
+
 	"github.com/g3n/engine/geometry"
 	"github.com/g3n/engine/graphic"
+	"github.com/g3n/engine/loader/gltf"
 	"github.com/g3n/engine/material"
 	"github.com/g3n/engine/math32"
 
@@ -56,11 +60,14 @@ func CreateTiles() []Tile {
 
 const tileSideLength = 1
 
+var once sync.Once
+var mat material.IMaterial
+
 func NewWallTile(x, y int) *graphic.Mesh {
 	height := float32(3)
 	geom := geometry.NewBox(tileSideLength, height, tileSideLength)
-	color := math32.NewColor("White")
-	mat := material.NewStandard(color)
+	//color := math32.NewColor("White")
+	//mat := material.NewStandard(color)
 	// FIXME: remove once camera is debugged
 	//color.R = float32(x) / 80
 	//color.G = float32(y) / 50
@@ -77,8 +84,21 @@ func NewWallTile(x, y int) *graphic.Mesh {
 	//	panic(err)
 	//}
 
-	tex := assets.Wall()
-	mat.AddTexture(tex)
+	once.Do(func() {
+		model, err := gltf.ParseBin("assets/wood_inlaid_stone_wall_1k.glb")
+		if err != nil {
+			panic(err)
+		}
+
+		slog.Info("load mat", "len(mat)", len(model.Materials))
+		mat, err = model.LoadMaterial(0)
+		if err != nil {
+			panic(err)
+		}
+	})
+
+	//tex := assets.Wall()
+	//mat.AddTexture(tex)
 	mesh := graphic.NewMesh(geom, mat)
 
 	mesh.SetPosition(float32(x), float32(height/2), float32(y))
