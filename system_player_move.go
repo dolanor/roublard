@@ -26,13 +26,13 @@ func (g *Game) onKey(evname string, ev any) {
 		kev := ev.(*window.KeyEvent)
 		g.log.Info("key pressed", "key", kev.Key)
 		switch kev.Key {
-		case window.KeyUp:
+		case window.KeyE:
 			pos.Y--
-		case window.KeyDown:
+		case window.KeyD:
 			pos.Y++
-		case window.KeyLeft:
+		case window.KeyS:
 			pos.X--
-		case window.KeyRight:
+		case window.KeyF:
 			pos.X++
 		}
 		slog.Info("pos", "x", pos.X, "y", pos.Y)
