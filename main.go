@@ -23,9 +23,10 @@ func main() {
 
 	cam := camera.New(0)
 	cam.SetPosition(40, 50, 25)
+	cam.LookAt(&math32.Vector3{40, 0, 25}, &math32.Vector3{0, 0, -1})
+
 	ctl := camera.NewOrbitControl(cam)
 	ctl.SetTarget(math32.Vector3{40, 0, 25})
-	//cam.SetDirection(110, 10, -100)
 
 	g := NewGame(a, scene, cam, slog.Default())
 
