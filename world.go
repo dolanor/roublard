@@ -8,14 +8,19 @@ import (
 	"github.com/g3n/engine/loader/gltf"
 )
 
+var position *ecs.Component
+var renderable *ecs.Component
+
 func InitWorld(scene *core.Node) (*ecs.Manager, map[string]ecs.Tag) {
 	tags := map[string]ecs.Tag{}
 
 	mgr := ecs.NewManager()
 
+	// WARNING: this is global state
+	position = mgr.NewComponent()
+	renderable = mgr.NewComponent()
+
 	player := mgr.NewComponent()
-	position := mgr.NewComponent()
-	renderable := mgr.NewComponent()
 	movable := mgr.NewComponent()
 
 	node := loadElf()
@@ -24,15 +29,20 @@ func InitWorld(scene *core.Node) (*ecs.Manager, map[string]ecs.Tag) {
 
 	mgr.NewEntity().
 		AddComponent(player, Player{}).
-		AddComponent(renderable, Renderable{}).
+		AddComponent(renderable, &Renderable{
+			node: node,
+		}).
 		AddComponent(movable, Movable{}).
-		AddComponent(position, Position{
+		AddComponent(position, &Position{
 			X: 40,
 			Y: 25,
 		})
 
 	players := ecs.BuildTag(player, position)
 	tags["players"] = players
+
+	renderables := ecs.BuildTag(renderable, position)
+	tags["renderables"] = renderables
 
 	return mgr, tags
 }

@@ -74,7 +74,7 @@ func NewGame(app *app.Application, scene *core.Node, cam *camera.Camera, log *sl
 
 	world, tags := InitWorld(scene)
 
-	return &Game{
+	g := Game{
 		app:   app,
 		scene: scene,
 		cam:   cam,
@@ -85,11 +85,16 @@ func NewGame(app *app.Application, scene *core.Node, cam *camera.Camera, log *sl
 
 		log: log,
 	}
+
+	app.Subscribe(window.OnKeyDown, g.onKey)
+	return &g
 }
 
 func (g *Game) Update(renderer *renderer.Renderer, deltaTime time.Duration) {
 	log := g.log.With("func", "update")
 	g.app.Gls().Clear(gls.DEPTH_BUFFER_BIT | gls.STENCIL_BUFFER_BIT | gls.COLOR_BUFFER_BIT)
+
+	ProcessRenderables(g, g.gameMap.Dungeons[0].Levels[0])
 
 	err := renderer.Render(g.scene, g.cam)
 	if err != nil {
