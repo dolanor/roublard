@@ -63,7 +63,7 @@ func NewGame(app *app.Application, scene *core.Node, cam *camera.Camera, log *sl
 
 	gui.Manager().Set(scene)
 	gm := NewGameMap()
-	tiles := gm.Dungeons[0].Levels[0].Tiles
+	tiles := gm.CurrentLevel.Tiles
 	for _, t := range tiles {
 		scene.Add(t.Mesh)
 	}
