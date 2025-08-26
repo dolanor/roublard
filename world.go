@@ -5,7 +5,9 @@ import (
 
 	"github.com/bytearena/ecs"
 	"github.com/g3n/engine/core"
+	"github.com/g3n/engine/light"
 	"github.com/g3n/engine/loader/gltf"
+	"github.com/g3n/engine/math32"
 )
 
 var position *ecs.Component
@@ -24,13 +26,27 @@ func InitWorld(scene *core.Node) (*ecs.Manager, map[string]ecs.Tag) {
 	movable := mgr.NewComponent()
 
 	node := loadElf()
-
 	scene.Add(node)
 
 	mgr.NewEntity().
 		AddComponent(player, Player{}).
 		AddComponent(renderable, &Renderable{
 			node: node,
+		}).
+		AddComponent(movable, Movable{}).
+		AddComponent(position, &Position{
+			X: 40,
+			Y: 25,
+		})
+
+	pointLight := light.NewPoint(&math32.Color{1, .5, 0}, 30)
+	pointLight.SetPosition(1, 1, 2)
+	scene.Add(pointLight)
+
+	mgr.NewEntity().
+		AddComponent(player, Player{}).
+		AddComponent(renderable, &Renderable{
+			node: pointLight,
 		}).
 		AddComponent(movable, Movable{}).
 		AddComponent(position, &Position{
