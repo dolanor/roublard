@@ -62,11 +62,7 @@ func NewGame(app *app.Application, scene *core.Node, cam *camera.Camera, log *sl
 	pointLight.SetPosition(1, 1, 2)
 
 	gui.Manager().Set(scene)
-	gm := NewGameMap()
-	tiles := gm.CurrentLevel.Tiles
-	for _, t := range tiles {
-		scene.Add(t.Mesh)
-	}
+	gm := NewGameMap(scene)
 
 	// add everything to the scene
 	//scene.Add(light.NewAmbient(&math32.Color{1, 1, 1}, .8))
