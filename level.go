@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/dolanor/roublard/assets"
 	"github.com/g3n/engine/geometry"
 	"github.com/g3n/engine/graphic"
@@ -65,6 +67,22 @@ func (l *Level) CreateTiles() []Tile {
 			}
 		}
 	}
+
+	fmt.Println("===============================")
+
+	for i, t := range tiles {
+		if i%gd.ScreenWidth == 0 {
+			fmt.Println()
+		}
+		tileChar := "."
+		if t.Blocked {
+			tileChar = "#"
+		}
+		fmt.Printf("%s", tileChar)
+
+	}
+
+	fmt.Println("===============================")
 	return tiles
 }
 
