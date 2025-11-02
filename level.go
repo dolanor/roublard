@@ -41,8 +41,8 @@ func (l *Level) CreateTiles() []Tile {
 	gd := NewGameData()
 	tiles := make([]Tile, 0, gd.ScreenHeight*gd.ScreenWidth)
 
-	for x := range gd.ScreenWidth {
-		for y := range gd.ScreenHeight {
+	for y := range gd.ScreenHeight {
+		for x := range gd.ScreenWidth {
 
 			if x == 0 || x == gd.ScreenWidth-1 ||
 				y == 0 || y == gd.ScreenHeight-1 {
