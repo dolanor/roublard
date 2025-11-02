@@ -16,6 +16,24 @@ const (
 )
 
 func (g *Game) onKey(evname string, ev any) {
+
+	x, y := 0, 0
+	kev := ev.(*window.KeyEvent)
+	g.log.Info("key pressed", "key", kev.Key)
+	switch kev.Key {
+	case window.KeyE:
+		y = -1
+	case window.KeyD:
+		y = 1
+	case window.KeyS:
+		x = -1
+	case window.KeyF:
+		x = 1
+	}
+	slog.Info("pos", "x", x, "y", y)
+
+	level := g.gameMap.CurrentLevel
+
 	for _, res := range g.World.Query(g.WorldTags["players"]) {
 		pos, ok := res.Components[position].(*Position)
 		if !ok {
@@ -23,18 +41,15 @@ func (g *Game) onKey(evname string, ev any) {
 			panic("bad pos")
 		}
 
-		kev := ev.(*window.KeyEvent)
-		g.log.Info("key pressed", "key", kev.Key)
-		switch kev.Key {
-		case window.KeyE:
-			pos.Y--
-		case window.KeyD:
-			pos.Y++
-		case window.KeyS:
-			pos.X--
-		case window.KeyF:
-			pos.X++
+		index := level.GetIndexFromXY(pos.X+x, pos.Y+y)
+		tile := level.Tiles[index]
+
+		slog.Info("pos", "X", pos.X, "Y", pos.Y, "block", tile.Blocked)
+
+		if tile.Blocked {
+			continue
 		}
-		slog.Info("pos", "x", pos.X, "y", pos.Y)
+		pos.X += x
+		pos.Y += y
 	}
 }
