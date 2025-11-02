@@ -56,7 +56,6 @@ func (l *Level) CreateTiles() []Tile {
 				tiles = append(tiles, tile)
 			} else {
 				floor := NewFloorTile(x, y, l.mm)
-				floor.SetPosition(float32(x), 0, float32(y))
 				tile := Tile{
 					PixelX:  x,
 					PixelY:  y,

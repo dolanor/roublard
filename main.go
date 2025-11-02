@@ -98,8 +98,3 @@ func (g *Game) Update(renderer *renderer.Renderer, deltaTime time.Duration) {
 		log.Error("render", "error", err)
 	}
 }
-
-func (g *Game) Layout(w, h int) (int, int) {
-	gd := NewGameData()
-	return gd.TileWidth * gd.ScreenWidth, gd.TileHeight * gd.ScreenHeight
-}
