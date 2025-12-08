@@ -47,7 +47,7 @@ func (l *Level) CreateTiles() []Tile {
 
 			if x == 0 || x == gd.ScreenWidth-1 ||
 				y == 0 || y == gd.ScreenHeight-1 {
-				wall := NewWallTile(x, y, l.mm)
+				wall := NewWallMesh(x, y, l.mm)
 				tile := Tile{
 					PixelX:  x,
 					PixelY:  y,
@@ -56,7 +56,7 @@ func (l *Level) CreateTiles() []Tile {
 				}
 				tiles = append(tiles, tile)
 			} else {
-				floor := NewFloorTile(x, y, l.mm)
+				floor := NewFloorMesh(x, y, l.mm)
 				tile := Tile{
 					PixelX:  x,
 					PixelY:  y,
@@ -93,7 +93,7 @@ func debugPrintTiles(tiles []Tile, gameData GameData) {
 const tileSideLength = 1
 const tileHeight = 0.1
 
-func NewWallTile(x, y int, mm *assets.MaterialManager) *graphic.Mesh {
+func NewWallMesh(x, y int, mm *assets.MaterialManager) *graphic.Mesh {
 	height := float32(3)
 	geom := geometry.NewBox(tileSideLength, height, tileSideLength)
 
@@ -104,7 +104,7 @@ func NewWallTile(x, y int, mm *assets.MaterialManager) *graphic.Mesh {
 	return mesh
 }
 
-func NewFloorTile(x, y int, mm *assets.MaterialManager) *graphic.Mesh {
+func NewFloorMesh(x, y int, mm *assets.MaterialManager) *graphic.Mesh {
 	geom := geometry.NewBox(tileSideLength, tileHeight, tileSideLength)
 
 	mesh := graphic.NewMesh(geom, nil)
