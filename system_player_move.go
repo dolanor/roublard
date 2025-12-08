@@ -29,6 +29,10 @@ func (g *Game) onKey(evname string, ev any) {
 		x = -1
 	case window.KeyF:
 		x = 1
+	case window.KeyM:
+		if kev.Mods == window.ModControl {
+			g.app.Exit()
+		}
 	}
 	slog.Info("pos", "x", x, "y", y)
 
