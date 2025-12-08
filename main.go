@@ -18,6 +18,7 @@ import (
 
 func main() {
 	a := app.App(1280, 800, "Roublard")
+	a.IWindow.SetFullScreen(true)
 
 	scene := core.NewNode()
 
@@ -48,7 +49,7 @@ type Game struct {
 func NewGame(app *app.Application, scene *core.Node, cam *camera.Camera, log *slog.Logger) *Game {
 	app.Gls().ClearColor(.0, .0, .0, 1)
 
-	onResize := func(evname string, ev any) {
+	onResize := func(_ string, _ any) {
 		w, h := app.GetSize()
 		app.Gls().Viewport(0, 0, int32(w), int32(h))
 		cam.SetAspect(float32(w) / float32(h))
