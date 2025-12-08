@@ -3,9 +3,10 @@ package main
 import (
 	"fmt"
 
-	"github.com/dolanor/roublard/assets"
 	"github.com/g3n/engine/geometry"
 	"github.com/g3n/engine/graphic"
+
+	"github.com/dolanor/roublard/assets"
 )
 
 type Tile struct {
@@ -66,11 +67,16 @@ func (l *Level) CreateTiles() []Tile {
 			}
 		}
 	}
+	debugPrintTiles(tiles, gd)
+	return tiles
+}
+
+func debugPrintTiles(tiles []Tile, gameData GameData) {
 
 	fmt.Println("===============================")
 
 	for i, t := range tiles {
-		if i%gd.ScreenWidth == 0 {
+		if i%gameData.ScreenWidth == 0 {
 			fmt.Println()
 		}
 		tileChar := "."
@@ -81,8 +87,7 @@ func (l *Level) CreateTiles() []Tile {
 
 	}
 
-	fmt.Println("===============================")
-	return tiles
+	fmt.Println("\n\n===============================")
 }
 
 const tileSideLength = 1
