@@ -25,13 +25,14 @@ func InitWorld(scene *core.Node) (*ecs.Manager, map[string]ecs.Tag) {
 	player := mgr.NewComponent()
 	movable := mgr.NewComponent()
 
-	node := loadElf()
-	scene.Add(node)
+	mesh := loadElfMesh()
+	scene.Add(mesh)
 
+	// Define the elf wizard in the ECS
 	mgr.NewEntity().
 		AddComponent(player, Player{}).
 		AddComponent(renderable, &Renderable{
-			node: node,
+			node: mesh,
 		}).
 		AddComponent(movable, Movable{}).
 		AddComponent(position, &Position{
@@ -43,6 +44,7 @@ func InitWorld(scene *core.Node) (*ecs.Manager, map[string]ecs.Tag) {
 	pointLight.SetPosition(1, 1, 2)
 	scene.Add(pointLight)
 
+	// Add the movable light (invisible torch for now) in the ECS
 	mgr.NewEntity().
 		AddComponent(player, Player{}).
 		AddComponent(renderable, &Renderable{
@@ -63,7 +65,8 @@ func InitWorld(scene *core.Node) (*ecs.Manager, map[string]ecs.Tag) {
 	return mgr, tags
 }
 
-func loadElf() core.INode {
+func loadElfMesh() core.INode {
+	// FIXME: use the game logger
 	log := slog.Default()
 
 	model, err := gltf.ParseBin("assets/elf-wizard.glb")
