@@ -47,7 +47,7 @@ type Game struct {
 }
 
 func NewGame(app *app.Application, scene *core.Node, cam *camera.Camera, log *slog.Logger) *Game {
-	app.Gls().ClearColor(.0, .0, .0, 1)
+	app.Gls().ClearColor(.5, .5, .5, 1)
 
 	onResize := func(_ string, _ any) {
 		w, h := app.GetSize()
@@ -70,7 +70,7 @@ func NewGame(app *app.Application, scene *core.Node, cam *camera.Camera, log *sl
 	scene.Add(pointLight)
 	scene.Add(cam)
 
-	world, tags := InitWorld(scene)
+	world, tags := InitWorld(scene, gm.CurrentLevel)
 
 	g := Game{
 		app:   app,

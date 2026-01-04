@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log/slog"
 
 	"github.com/g3n/engine/geometry"
 	"github.com/g3n/engine/graphic"
@@ -18,7 +19,9 @@ type Tile struct {
 
 type Level struct {
 	Tiles []Tile
-	mm    *assets.MaterialManager
+	Rooms []Rect
+
+	mm *assets.MaterialManager
 }
 
 func NewLevel() Level {
@@ -27,9 +30,9 @@ func NewLevel() Level {
 		mm: mm,
 	}
 
-	tiles := l.CreateTiles()
-	l.Tiles = tiles
+	l.generateLevelTiles()
 
+	slog.Info("rooms", "rooms", l.Rooms)
 	return l
 }
 
@@ -41,35 +44,78 @@ func (l *Level) GetIndexFromXY(x, y int) int {
 
 func (l *Level) CreateTiles() []Tile {
 	gd := NewGameData()
-	tiles := make([]Tile, 0, gd.ScreenHeight*gd.ScreenWidth)
+	tiles := make([]Tile, gd.ScreenHeight*gd.ScreenWidth)
 
+	index := 0
 	for y := range gd.ScreenHeight {
 		for x := range gd.ScreenWidth {
+			index = l.GetIndexFromXY(x, y)
 
-			if x == 0 || x == gd.ScreenWidth-1 ||
-				y == 0 || y == gd.ScreenHeight-1 {
-				wall := NewWallMesh(x, y, l.mm)
-				tile := Tile{
-					PixelX:  x,
-					PixelY:  y,
-					Blocked: true,
-					Mesh:    wall,
-				}
-				tiles = append(tiles, tile)
-			} else {
-				floor := NewFloorMesh(x, y, l.mm)
-				tile := Tile{
-					PixelX:  x,
-					PixelY:  y,
-					Blocked: false,
-					Mesh:    floor,
-				}
-				tiles = append(tiles, tile)
+			wall := NewWallMesh(x, y, l.mm)
+			tile := Tile{
+				PixelX:  x,
+				PixelY:  y,
+				Blocked: true,
+				Mesh:    wall,
 			}
+			tiles[index] = tile
 		}
 	}
 	debugPrintTiles(tiles, gd)
 	return tiles
+}
+
+func (l *Level) createRoom(room Rect) {
+	slog.Info("carving room", "room", room)
+	for y := room.Y1 + 1; y < room.Y2; y++ {
+		for x := room.X1 + 1; x < room.X2; x++ {
+			index := l.GetIndexFromXY(x, y)
+
+			l.Tiles[index].Blocked = false
+
+			floor := NewFloorMesh(x, y, l.mm)
+			l.Tiles[index].Mesh = floor
+		}
+	}
+}
+
+func (l *Level) generateLevelTiles() {
+	const (
+		minSize  = 6
+		maxSize  = 10
+		maxRooms = 30
+	)
+
+	// TODO: use the same reference to game data
+	gd := NewGameData()
+	tiles := l.CreateTiles()
+
+	l.Tiles = tiles
+
+	for i := 0; i < maxRooms; i++ {
+		w := GetRandomBetween(minSize, maxSize)
+		h := GetRandomBetween(minSize, maxSize)
+		x := GetDiceRoll(gd.ScreenWidth-w-1) - 1
+		y := GetDiceRoll(gd.ScreenHeight-w-1) - 1
+
+		newRoom := NewRect(x, y, w, h)
+
+		slog.Info("creating room", "i", i, "room", newRoom)
+		okToAdd := true
+
+		for _, otherRoom := range l.Rooms {
+			if newRoom.Intersect(otherRoom) {
+				okToAdd = false
+				break
+			}
+		}
+
+		if okToAdd {
+			l.createRoom(newRoom)
+			l.Rooms = append(l.Rooms, newRoom)
+		}
+	}
+
 }
 
 func debugPrintTiles(tiles []Tile, gameData GameData) {

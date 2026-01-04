@@ -13,7 +13,7 @@ import (
 var position *ecs.Component
 var renderable *ecs.Component
 
-func InitWorld(scene *core.Node) (*ecs.Manager, map[string]ecs.Tag) {
+func InitWorld(scene *core.Node, startLevel Level) (*ecs.Manager, map[string]ecs.Tag) {
 	tags := map[string]ecs.Tag{}
 
 	mgr := ecs.NewManager()
@@ -28,6 +28,10 @@ func InitWorld(scene *core.Node) (*ecs.Manager, map[string]ecs.Tag) {
 	mesh := loadElfMesh()
 	scene.Add(mesh)
 
+	// Get First Room
+	startRoom := startLevel.Rooms[0]
+	x, y := startRoom.Center()
+
 	// Define the elf wizard in the ECS
 	mgr.NewEntity().
 		AddComponent(player, Player{}).
@@ -36,8 +40,8 @@ func InitWorld(scene *core.Node) (*ecs.Manager, map[string]ecs.Tag) {
 		}).
 		AddComponent(movable, Movable{}).
 		AddComponent(position, &Position{
-			X: 40,
-			Y: 25,
+			X: x,
+			Y: y,
 		})
 
 	pointLight := light.NewPoint(&math32.Color{1, .5, 0}, 30)
@@ -52,8 +56,8 @@ func InitWorld(scene *core.Node) (*ecs.Manager, map[string]ecs.Tag) {
 		}).
 		AddComponent(movable, Movable{}).
 		AddComponent(position, &Position{
-			X: 40,
-			Y: 25,
+			X: x,
+			Y: y,
 		})
 
 	players := ecs.BuildTag(player, position)
