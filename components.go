@@ -7,6 +7,7 @@ type Player struct{}
 type Position struct {
 	X int
 	Y int
+	Z int
 }
 
 type Renderable struct {

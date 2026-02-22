@@ -13,11 +13,12 @@ const (
 	MoveRight Move = "move_right"
 	MoveUp    Move = "move_up"
 	MoveDown  Move = "move_down"
+	MoveJump  Move = "move_jump"
 )
 
 func (g *Game) onKey(evname string, ev any) {
 
-	x, y := 0, 0
+	x, y, z := 0, 0, 0
 	kev := ev.(*window.KeyEvent)
 	g.log.Info("key pressed", "key", kev.Key)
 	switch kev.Key {
@@ -29,13 +30,14 @@ func (g *Game) onKey(evname string, ev any) {
 		x = -1
 	case window.KeyF:
 		x = 1
-
 	case window.KeyM:
 		if kev.Mods == window.ModControl {
 			g.app.Exit()
 		}
+	case window.KeySpace:
+		z = 1
 	}
-	slog.Info("pos", "x", x, "y", y)
+	slog.Info("pos", "x", x, "y", y, "z", z)
 
 	level := g.gameMap.CurrentLevel
 
@@ -49,12 +51,13 @@ func (g *Game) onKey(evname string, ev any) {
 		index := level.GetIndexFromXY(pos.X+x, pos.Y+y)
 		tile := level.Tiles[index]
 
-		slog.Info("pos", "X", pos.X, "Y", pos.Y, "block", tile.Blocked)
+		slog.Info("pos", "X", pos.X, "Y", pos.Y, "Z", pos.Z, "block", tile.Blocked)
 
 		if tile.Blocked {
 			continue
 		}
 		pos.X += x
 		pos.Y += y
+		pos.Z += z
 	}
 }

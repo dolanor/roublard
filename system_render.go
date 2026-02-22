@@ -16,6 +16,6 @@ func ProcessRenderables(game *Game, level Level /* TODO , ??? */) {
 			slog.Error("bad node", "node", node)
 		}
 
-		node.node.GetNode().SetPosition(float32(pos.X), 0.7+tileHeight, float32(pos.Y))
+		node.node.GetNode().SetPosition(float32(pos.X), 0.7+tileHeight+float32(pos.Z), float32(pos.Y))
 	}
 }

@@ -31,6 +31,7 @@ func InitWorld(scene *core.Node, startLevel Level) (*ecs.Manager, map[string]ecs
 	// Get First Room
 	startRoom := startLevel.Rooms[0]
 	x, y := startRoom.Center()
+	z := 0
 
 	// Define the elf wizard in the ECS
 	mgr.NewEntity().
@@ -42,6 +43,7 @@ func InitWorld(scene *core.Node, startLevel Level) (*ecs.Manager, map[string]ecs
 		AddComponent(position, &Position{
 			X: x,
 			Y: y,
+			Z: z,
 		})
 
 	pointLight := light.NewPoint(&math32.Color{1, .5, 0}, 30)
@@ -58,6 +60,7 @@ func InitWorld(scene *core.Node, startLevel Level) (*ecs.Manager, map[string]ecs
 		AddComponent(position, &Position{
 			X: x,
 			Y: y,
+			Z: z,
 		})
 
 	players := ecs.BuildTag(player, position)
