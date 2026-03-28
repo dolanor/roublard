@@ -44,6 +44,8 @@ type Game struct {
 	World     *ecs.Manager
 	WorldTags map[string]ecs.Tag
 
+	Turn        TurnState
+	TurnCounter int
 	// FIXME: maybe protect it with a mutex
 	currentX int
 	currentY int
@@ -85,6 +87,8 @@ func NewGame(app *app.Application, scene *core.Node, cam *camera.Camera, log *sl
 		gameMap:   gm,
 		World:     world,
 		WorldTags: tags,
+
+		Turn: PlayerTurn,
 
 		log: log,
 	}

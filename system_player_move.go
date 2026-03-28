@@ -19,7 +19,12 @@ const (
 
 func (g *Game) logicUpdateLoop() {
 	for range time.Tick(time.Second / 60) {
-		g.TryMovePlayers()
+		g.TurnCounter++
+		if g.Turn == PlayerTurn && g.TurnCounter > 20 {
+			g.TryMovePlayers()
+		}
+		// Obviously just for now
+		g.Turn = PlayerTurn
 	}
 }
 
@@ -83,5 +88,11 @@ func (g *Game) TryMovePlayers() {
 		}
 		pos.X += x
 		pos.Y += y
+	}
+
+	if x != 0 || y != 0 {
+		g.currentX, g.currentY = 0, 0
+		g.Turn = GetNextState(g.Turn)
+		g.TurnCounter = 0
 	}
 }
