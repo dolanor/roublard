@@ -21,13 +21,15 @@ type Level struct {
 	Tiles []Tile
 	Rooms []Rect
 
-	mm *assets.MaterialManager
+	mm       *assets.MaterialManager
+	gameData GameData
 }
 
 func NewLevel() Level {
 	mm := assets.NewMaterialManager()
 	l := Level{
-		mm: mm,
+		mm:       mm,
+		gameData: NewGameData(),
 	}
 
 	l.generateLevelTiles()
@@ -38,12 +40,12 @@ func NewLevel() Level {
 
 func (l *Level) GetIndexFromXY(x, y int) int {
 	// FIXME: reuse another instance of game data
-	gd := NewGameData()
+	gd := l.gameData
 	return (y * gd.ScreenWidth) + x
 }
 
 func (l *Level) CreateTiles() []Tile {
-	gd := NewGameData()
+	gd := l.gameData
 	tiles := make([]Tile, gd.ScreenHeight*gd.ScreenWidth)
 
 	index := 0
@@ -86,8 +88,7 @@ func (l *Level) generateLevelTiles() {
 		maxRooms = 30
 	)
 
-	// TODO: use the same reference to game data
-	gd := NewGameData()
+	gd := l.gameData
 	tiles := l.CreateTiles()
 
 	l.Tiles = tiles
