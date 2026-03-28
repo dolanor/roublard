@@ -87,6 +87,7 @@ func (l *Level) generateLevelTiles() {
 		maxSize  = 10
 		maxRooms = 30
 	)
+	containsRoom := false
 
 	gd := l.gameData
 	tiles := l.CreateTiles()
@@ -96,8 +97,8 @@ func (l *Level) generateLevelTiles() {
 	for i := 0; i < maxRooms; i++ {
 		w := GetRandomBetween(minSize, maxSize)
 		h := GetRandomBetween(minSize, maxSize)
-		x := GetDiceRoll(gd.ScreenWidth-w-1) - 1
-		y := GetDiceRoll(gd.ScreenHeight-w-1) - 1
+		x := GetDiceRoll(gd.ScreenWidth - w - 1)
+		y := GetDiceRoll(gd.ScreenHeight - w - 1)
 
 		newRoom := NewRect(x, y, w, h)
 
@@ -113,10 +114,49 @@ func (l *Level) generateLevelTiles() {
 
 		if okToAdd {
 			l.createRoom(newRoom)
+			if containsRoom {
+				newX, newY := newRoom.Center()
+				prevX, prevY := l.Rooms[len(l.Rooms)-1].Center()
+
+				coinFlip := GetDiceRoll(2)
+				if coinFlip == 2 {
+					l.createHorizontalTunnel(prevX, newX, prevY)
+					l.createVerticalTunnel(prevY, newY, newX)
+				} else {
+					l.createHorizontalTunnel(prevX, newX, newY)
+					l.createVerticalTunnel(prevY, newY, prevX)
+				}
+			}
+
 			l.Rooms = append(l.Rooms, newRoom)
+			containsRoom = true
 		}
 	}
 
+}
+
+func (l *Level) createHorizontalTunnel(x1, x2, y int) {
+	gd := l.gameData
+	for x := min(x1, x2); x < max(x1, x2)+1; x++ {
+		index := l.GetIndexFromXY(x, y)
+
+		if index > 0 && index < gd.ScreenWidth*gd.ScreenHeight {
+			l.Tiles[index].Blocked = false
+			l.Tiles[index].Mesh = NewFloorMesh(x, y, l.mm)
+		}
+	}
+}
+
+func (l *Level) createVerticalTunnel(x, y1, y2 int) {
+	gd := l.gameData
+	for y := min(y1, y2); y < max(y1, y2)+1; y++ {
+		index := l.GetIndexFromXY(x, y)
+
+		if index > 0 && index < gd.ScreenWidth*gd.ScreenHeight {
+			l.Tiles[index].Blocked = false
+			l.Tiles[index].Mesh = NewFloorMesh(x, y, l.mm)
+		}
+	}
 }
 
 func debugPrintTiles(tiles []Tile, gameData GameData) {
