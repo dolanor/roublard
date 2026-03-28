@@ -147,7 +147,7 @@ func (l *Level) createHorizontalTunnel(x1, x2, y int) {
 	}
 }
 
-func (l *Level) createVerticalTunnel(x, y1, y2 int) {
+func (l *Level) createVerticalTunnel(y1, y2, x int) {
 	gd := l.gameData
 	for y := min(y1, y2); y < max(y1, y2)+1; y++ {
 		index := l.GetIndexFromXY(x, y)
