@@ -3,6 +3,7 @@ package main
 import (
 	"log/slog"
 
+	"github.com/g3n/engine/camera"
 	"github.com/g3n/engine/window"
 )
 
@@ -33,6 +34,18 @@ func (g *Game) onKey(evname string, ev any) {
 	case window.KeyM:
 		if kev.Mods == window.ModControl {
 			g.app.Exit()
+		}
+
+	case window.KeyU:
+		if kev.Mods == window.ModControl {
+			if g.orthoToggle {
+				g.cam.SetProjection(camera.Orthographic)
+				g.orthoToggle = !g.orthoToggle
+			} else {
+				g.cam.SetProjection(camera.Perspective)
+				g.orthoToggle = !g.orthoToggle
+			}
+
 		}
 	}
 	slog.Info("pos", "x", x, "y", y)

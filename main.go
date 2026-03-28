@@ -35,9 +35,10 @@ func main() {
 }
 
 type Game struct {
-	app   *app.Application
-	scene *core.Node
-	cam   *camera.Camera
+	app         *app.Application
+	scene       *core.Node
+	cam         *camera.Camera
+	orthoToggle bool
 
 	gameMap   GameMap
 	World     *ecs.Manager
