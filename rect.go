@@ -10,8 +10,8 @@ type Rect struct {
 func NewRect(x, y, w, h int) Rect {
 	return Rect{
 		X1: x,
-		X2: y,
-		Y1: x + w,
+		Y1: y,
+		X2: x + w,
 		Y2: y + h,
 	}
 }
