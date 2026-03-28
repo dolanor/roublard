@@ -17,8 +17,13 @@ const (
 )
 
 func (g *Game) onKey(evname string, ev any) {
+	x, y := g.processKeys(ev)
 
-	x, y := 0, 0
+	g.TryMovePlayers(x, y)
+}
+
+func (g *Game) processKeys(ev any) (x, y int) {
+
 	kev := ev.(*window.KeyEvent)
 	switch kev.Key {
 	case window.KeyE:
@@ -48,6 +53,10 @@ func (g *Game) onKey(evname string, ev any) {
 		}
 	}
 
+	return x, y
+}
+
+func (g *Game) TryMovePlayers(x, y int) {
 	level := g.gameMap.CurrentLevel
 
 	for _, res := range g.World.Query(g.WorldTags["players"]) {
