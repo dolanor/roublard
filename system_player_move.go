@@ -2,6 +2,7 @@ package main
 
 import (
 	"log/slog"
+	"time"
 
 	"github.com/g3n/engine/camera"
 	"github.com/g3n/engine/window"
@@ -16,10 +17,14 @@ const (
 	MoveDown  Move = "move_down"
 )
 
-func (g *Game) onKey(evname string, ev any) {
-	x, y := g.processKeys(ev)
+func (g *Game) logicUpdateLoop() {
+	for range time.Tick(time.Second / 60) {
+		g.TryMovePlayers()
+	}
+}
 
-	g.TryMovePlayers(x, y)
+func (g *Game) onKey(evname string, ev any) {
+	g.currentX, g.currentY = g.processKeys(ev)
 }
 
 func (g *Game) processKeys(ev any) (x, y int) {
@@ -56,8 +61,10 @@ func (g *Game) processKeys(ev any) (x, y int) {
 	return x, y
 }
 
-func (g *Game) TryMovePlayers(x, y int) {
+func (g *Game) TryMovePlayers() {
 	level := g.gameMap.CurrentLevel
+
+	x, y := g.currentX, g.currentY
 
 	for _, res := range g.World.Query(g.WorldTags["players"]) {
 		pos, ok := res.Components[position].(*Position)

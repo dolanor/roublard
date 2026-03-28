@@ -44,6 +44,10 @@ type Game struct {
 	World     *ecs.Manager
 	WorldTags map[string]ecs.Tag
 
+	// FIXME: maybe protect it with a mutex
+	currentX int
+	currentY int
+
 	log *slog.Logger
 }
 
@@ -86,6 +90,9 @@ func NewGame(app *app.Application, scene *core.Node, cam *camera.Camera, log *sl
 	}
 
 	app.Subscribe(window.OnKeyDown, g.onKey)
+
+	go g.logicUpdateLoop()
+
 	return &g
 }
 
