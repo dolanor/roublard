@@ -39,7 +39,6 @@ func NewLevel() Level {
 }
 
 func (l *Level) GetIndexFromXY(x, y int) int {
-	// FIXME: reuse another instance of game data
 	gd := l.gameData
 	return (y * gd.ScreenWidth) + x
 }

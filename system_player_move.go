@@ -20,7 +20,6 @@ func (g *Game) onKey(evname string, ev any) {
 
 	x, y := 0, 0
 	kev := ev.(*window.KeyEvent)
-	g.log.Info("key pressed", "key", kev.Key)
 	switch kev.Key {
 	case window.KeyE:
 		y = -1
@@ -48,7 +47,6 @@ func (g *Game) onKey(evname string, ev any) {
 
 		}
 	}
-	slog.Info("pos", "x", x, "y", y)
 
 	level := g.gameMap.CurrentLevel
 
@@ -62,7 +60,7 @@ func (g *Game) onKey(evname string, ev any) {
 		index := level.GetIndexFromXY(pos.X+x, pos.Y+y)
 		tile := level.Tiles[index]
 
-		slog.Info("pos", "X", pos.X, "Y", pos.Y, "block", tile.Blocked)
+		//slog.Info("pos", "X", pos.X, "Y", pos.Y, "block", tile.Blocked)
 
 		if tile.Blocked {
 			continue
