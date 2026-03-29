@@ -6,6 +6,7 @@ import (
 
 	"github.com/g3n/engine/geometry"
 	"github.com/g3n/engine/graphic"
+	"github.com/norendren/go-fov/fov"
 
 	"github.com/dolanor/roublard/assets"
 )
@@ -21,15 +22,17 @@ type Level struct {
 	Tiles []Tile
 	Rooms []Rect
 
-	mm       *assets.MaterialManager
-	gameData GameData
+	mm            *assets.MaterialManager
+	gameData      GameData
+	PlayerVisible *fov.View
 }
 
 func NewLevel() Level {
 	mm := assets.NewMaterialManager()
 	l := Level{
-		mm:       mm,
-		gameData: NewGameData(),
+		mm:            mm,
+		gameData:      NewGameData(),
+		PlayerVisible: fov.New(),
 	}
 
 	l.generateLevelTiles()
@@ -156,6 +159,20 @@ func (l *Level) createVerticalTunnel(y1, y2, x int) {
 			l.Tiles[index].Mesh = NewFloorMesh(x, y, l.mm)
 		}
 	}
+}
+
+func (level Level) InBounds(x, y int) bool {
+	gd := NewGameData()
+	if x < 0 || x > gd.ScreenWidth || y < 0 || y > gd.ScreenHeight {
+		return false
+	}
+	return true
+}
+
+// TODO: Change this to check for WALL, not blocked
+func (level Level) IsOpaque(x, y int) bool {
+	idx := level.GetIndexFromXY(x, y)
+	return level.Tiles[idx].Blocked
 }
 
 func debugPrintTiles(tiles []Tile, gameData GameData) {

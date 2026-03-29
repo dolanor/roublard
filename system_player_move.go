@@ -70,6 +70,7 @@ func (g *Game) TryMovePlayers() {
 	level := g.gameMap.CurrentLevel
 
 	x, y := g.currentX, g.currentY
+	gd := level.gameData
 
 	for _, res := range g.World.Query(g.WorldTags["players"]) {
 		pos, ok := res.Components[position].(*Position)
@@ -79,7 +80,7 @@ func (g *Game) TryMovePlayers() {
 		}
 
 		index := level.GetIndexFromXY(pos.X+x, pos.Y+y)
-		tile := level.Tiles[index]
+		tile := &level.Tiles[index]
 
 		//slog.Info("pos", "X", pos.X, "Y", pos.Y, "block", tile.Blocked)
 
@@ -88,6 +89,21 @@ func (g *Game) TryMovePlayers() {
 		}
 		pos.X += x
 		pos.Y += y
+		level.PlayerVisible.Compute(level, pos.X, pos.Y, 8)
+
+		// We decide to check for every tile in the level if it should be rendered or not
+		for x := 0; x < gd.ScreenWidth; x++ {
+			for y := 0; y < gd.ScreenHeight; y++ {
+				index := level.GetIndexFromXY(x, y)
+				tile := &level.Tiles[index]
+
+				if level.PlayerVisible.IsVisible(x, y) {
+					tile.Mesh.SetRenderable(true)
+				} else {
+					tile.Mesh.SetRenderable(false)
+				}
+			}
+		}
 	}
 
 	if x != 0 || y != 0 {
