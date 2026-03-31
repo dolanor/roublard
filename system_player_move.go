@@ -97,8 +97,14 @@ func (g *Game) TryMovePlayers() {
 				index := level.GetIndexFromXY(x, y)
 				tile := &level.Tiles[index]
 
+				if tile.IsRevealed {
+					tile.Mesh.SetRenderable(true)
+					continue
+				}
+
 				if level.PlayerVisible.IsVisible(x, y) {
 					tile.Mesh.SetRenderable(true)
+					tile.IsRevealed = true
 				} else {
 					tile.Mesh.SetRenderable(false)
 				}

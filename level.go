@@ -12,10 +12,11 @@ import (
 )
 
 type Tile struct {
-	PixelX  int
-	PixelY  int
-	Blocked bool
-	Mesh    *graphic.Mesh
+	PixelX     int
+	PixelY     int
+	Blocked    bool
+	Mesh       *graphic.Mesh
+	IsRevealed bool
 }
 
 type Level struct {
