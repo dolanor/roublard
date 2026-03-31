@@ -26,6 +26,9 @@ func NewMaterialManager() *MaterialManager {
 	wall := wallMat()
 	mm.Add(MaterialID("wall"), wall)
 
+	wallWireframe := wallMatWF()
+	mm.Add(MaterialID("wallwf"), wallWireframe)
+
 	return &mm
 }
 

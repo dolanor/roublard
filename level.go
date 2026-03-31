@@ -17,6 +17,7 @@ type Tile struct {
 	Blocked    bool
 	Mesh       *graphic.Mesh
 	IsRevealed bool
+	IsWall     bool
 }
 
 type Level struct {
@@ -62,6 +63,7 @@ func (l *Level) CreateTiles() []Tile {
 				PixelY:  y,
 				Blocked: true,
 				Mesh:    wall,
+				IsWall:  true,
 			}
 			tiles[index] = tile
 		}
@@ -77,6 +79,7 @@ func (l *Level) createRoom(room Rect) {
 			index := l.GetIndexFromXY(x, y)
 
 			l.Tiles[index].Blocked = false
+			l.Tiles[index].IsWall = false
 
 			floor := NewFloorMesh(x, y, l.mm)
 			l.Tiles[index].Mesh = floor
@@ -145,6 +148,7 @@ func (l *Level) createHorizontalTunnel(x1, x2, y int) {
 
 		if index > 0 && index < gd.ScreenWidth*gd.ScreenHeight {
 			l.Tiles[index].Blocked = false
+			l.Tiles[index].IsWall = false
 			l.Tiles[index].Mesh = NewFloorMesh(x, y, l.mm)
 		}
 	}
@@ -157,6 +161,7 @@ func (l *Level) createVerticalTunnel(y1, y2, x int) {
 
 		if index > 0 && index < gd.ScreenWidth*gd.ScreenHeight {
 			l.Tiles[index].Blocked = false
+			l.Tiles[index].IsWall = false
 			l.Tiles[index].Mesh = NewFloorMesh(x, y, l.mm)
 		}
 	}

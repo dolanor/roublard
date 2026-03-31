@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"time"
 
+	"github.com/dolanor/roublard/assets"
 	"github.com/g3n/engine/camera"
 	"github.com/g3n/engine/window"
 )
@@ -91,22 +92,33 @@ func (g *Game) TryMovePlayers() {
 		pos.Y += y
 		level.PlayerVisible.Compute(level, pos.X, pos.Y, 8)
 
+		solidMat := level.mm.Get(assets.MaterialID("wall"))
+		wireframeMat := level.mm.Get(assets.MaterialID("wallwf"))
+		_, _ = solidMat, wireframeMat
 		// We decide to check for every tile in the level if it should be rendered or not
 		for x := 0; x < gd.ScreenWidth; x++ {
 			for y := 0; y < gd.ScreenHeight; y++ {
 				index := level.GetIndexFromXY(x, y)
 				tile := &level.Tiles[index]
 
-				if tile.IsRevealed {
-					tile.Mesh.SetRenderable(true)
-					continue
-				}
-
 				if level.PlayerVisible.IsVisible(x, y) {
-					tile.Mesh.SetRenderable(true)
 					tile.IsRevealed = true
+
+					tile.Mesh.SetRenderable(true)
+					if tile.IsWall {
+						tile.Mesh.SetMaterial(solidMat)
+					}
 				} else {
-					tile.Mesh.SetRenderable(false)
+					if !tile.IsRevealed {
+						tile.Mesh.SetRenderable(false)
+						continue
+					}
+
+					if tile.IsWall {
+						tile.Mesh.SetMaterial(wireframeMat)
+						tile.Mesh.SetRenderable(true)
+						continue
+					}
 				}
 			}
 		}

@@ -25,6 +25,22 @@ func wallMat() material.IMaterial {
 	return mat
 }
 
+func wallMatWF() material.IMaterial {
+	model, err := gltf.ParseBin("assets/wood_inlaid_stone_wall_1k.glb")
+	if err != nil {
+		panic(err)
+	}
+
+	mat, err := model.LoadMaterial(0)
+	if err != nil {
+		panic(err)
+	}
+
+	mat.GetMaterial().SetWireframe(true)
+
+	return mat
+}
+
 //go:embed floor.png
 var floor []byte
 
