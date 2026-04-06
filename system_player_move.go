@@ -19,7 +19,7 @@ const (
 )
 
 func (g *Game) logicUpdateLoop() {
-	for range time.Tick(time.Second / 60) {
+	for range time.Tick(time.Second / 120) {
 		g.TurnCounter++
 		if g.Turn == PlayerTurn && g.TurnCounter > 20 {
 			g.TryMovePlayers()
