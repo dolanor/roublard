@@ -58,6 +58,7 @@ func (l *Level) CreateTiles() []Tile {
 			index = l.GetIndexFromXY(x, y)
 
 			wall := NewWallMesh(x, y, l.mm)
+			wall.SetRenderable(false)
 			tile := Tile{
 				PixelX:  x,
 				PixelY:  y,
@@ -82,6 +83,7 @@ func (l *Level) createRoom(room Rect) {
 			l.Tiles[index].IsWall = false
 
 			floor := NewFloorMesh(x, y, l.mm)
+			floor.SetRenderable(false)
 			l.Tiles[index].Mesh = floor
 		}
 	}
@@ -149,7 +151,10 @@ func (l *Level) createHorizontalTunnel(x1, x2, y int) {
 		if index > 0 && index < gd.ScreenWidth*gd.ScreenHeight {
 			l.Tiles[index].Blocked = false
 			l.Tiles[index].IsWall = false
-			l.Tiles[index].Mesh = NewFloorMesh(x, y, l.mm)
+			floor := NewFloorMesh(x, y, l.mm)
+			floor.SetRenderable(false)
+
+			l.Tiles[index].Mesh = floor
 		}
 	}
 }
@@ -162,7 +167,10 @@ func (l *Level) createVerticalTunnel(y1, y2, x int) {
 		if index > 0 && index < gd.ScreenWidth*gd.ScreenHeight {
 			l.Tiles[index].Blocked = false
 			l.Tiles[index].IsWall = false
-			l.Tiles[index].Mesh = NewFloorMesh(x, y, l.mm)
+			floor := NewFloorMesh(x, y, l.mm)
+			floor.SetRenderable(false)
+
+			l.Tiles[index].Mesh = floor
 		}
 	}
 }
