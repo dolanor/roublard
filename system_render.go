@@ -17,5 +17,11 @@ func ProcessRenderables(game *Game, level Level /* TODO , ??? */) {
 		}
 
 		node.node.GetNode().SetPosition(float32(pos.X), 0.7+tileHeight, float32(pos.Y))
+
+		if level.PlayerVisible.IsVisible(pos.X, pos.Y) {
+			node.node.SetVisible(true)
+		} else {
+			node.node.SetVisible(false)
+		}
 	}
 }

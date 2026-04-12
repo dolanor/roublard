@@ -28,6 +28,8 @@ func InitWorld(scene *core.Node, startLevel Level) (*ecs.Manager, map[string]ecs
 	mesh := loadElfMesh()
 	scene.Add(mesh)
 
+	monster := mgr.NewComponent()
+
 	// Get First Room
 	startRoom := startLevel.Rooms[0]
 	x, y := startRoom.Center()
@@ -62,6 +64,31 @@ func InitWorld(scene *core.Node, startLevel Level) (*ecs.Manager, map[string]ecs
 
 	players := ecs.BuildTag(player, position)
 	tags["players"] = players
+
+	for _, room := range startLevel.Rooms {
+		if room.X1 != startRoom.X1 {
+			// TODO: change for an skeleton model
+			monsterMesh := loadElfMesh()
+			// Make it taller to separate from player
+			monsterMesh.GetNode().SetScale(0.01, 0.02, 0.01)
+			monsterMesh.GetNode().UpdateMatrix()
+			monsterMesh.GetNode().SetVisible(false)
+
+			scene.Add(monsterMesh)
+
+			mX, mY := room.Center()
+
+			mgr.NewEntity().
+				AddComponent(monster, Monster{}).
+				AddComponent(renderable, &Renderable{
+					node: monsterMesh,
+				}).
+				AddComponent(position, &Position{
+					X: mX,
+					Y: mY,
+				})
+		}
+	}
 
 	renderables := ecs.BuildTag(renderable, position)
 	tags["renderables"] = renderables

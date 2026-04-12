@@ -11,6 +11,13 @@ import (
 	"github.com/dolanor/roublard/assets"
 )
 
+type TileType int
+
+const (
+	WALL TileType = iota
+	FLOOR
+)
+
 type Tile struct {
 	PixelX     int
 	PixelY     int
@@ -18,6 +25,7 @@ type Tile struct {
 	Mesh       *graphic.Mesh
 	IsRevealed bool
 	IsWall     bool
+	TileType   TileType
 }
 
 type Level struct {
@@ -60,11 +68,12 @@ func (l *Level) CreateTiles() []Tile {
 			wall := NewWallMesh(x, y, l.mm)
 			wall.SetVisible(false)
 			tile := Tile{
-				PixelX:  x,
-				PixelY:  y,
-				Blocked: true,
-				Mesh:    wall,
-				IsWall:  true,
+				PixelX:   x,
+				PixelY:   y,
+				Blocked:  true,
+				Mesh:     wall,
+				IsWall:   true,
+				TileType: WALL,
 			}
 			tiles[index] = tile
 		}
@@ -81,6 +90,7 @@ func (l *Level) createRoom(room Rect) {
 
 			l.Tiles[index].Blocked = false
 			l.Tiles[index].IsWall = false
+			l.Tiles[index].TileType = FLOOR
 
 			floor := NewFloorMesh(x, y, l.mm)
 			floor.SetVisible(false)
@@ -151,6 +161,8 @@ func (l *Level) createHorizontalTunnel(x1, x2, y int) {
 		if index > 0 && index < gd.ScreenWidth*gd.ScreenHeight {
 			l.Tiles[index].Blocked = false
 			l.Tiles[index].IsWall = false
+			l.Tiles[index].TileType = FLOOR
+
 			floor := NewFloorMesh(x, y, l.mm)
 			floor.SetVisible(false)
 
@@ -167,6 +179,8 @@ func (l *Level) createVerticalTunnel(y1, y2, x int) {
 		if index > 0 && index < gd.ScreenWidth*gd.ScreenHeight {
 			l.Tiles[index].Blocked = false
 			l.Tiles[index].IsWall = false
+			l.Tiles[index].TileType = FLOOR
+
 			floor := NewFloorMesh(x, y, l.mm)
 			floor.SetVisible(false)
 
@@ -186,7 +200,7 @@ func (level Level) InBounds(x, y int) bool {
 // TODO: Change this to check for WALL, not blocked
 func (level Level) IsOpaque(x, y int) bool {
 	idx := level.GetIndexFromXY(x, y)
-	return level.Tiles[idx].Blocked
+	return level.Tiles[idx].TileType == WALL
 }
 
 func debugPrintTiles(tiles []Tile, gameData GameData) {

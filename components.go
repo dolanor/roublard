@@ -4,6 +4,8 @@ import "github.com/g3n/engine/core"
 
 type Player struct{}
 
+type Monster struct{}
+
 type Position struct {
 	X int
 	Y int
