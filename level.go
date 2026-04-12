@@ -58,7 +58,7 @@ func (l *Level) CreateTiles() []Tile {
 			index = l.GetIndexFromXY(x, y)
 
 			wall := NewWallMesh(x, y, l.mm)
-			wall.SetRenderable(false)
+			wall.SetVisible(false)
 			tile := Tile{
 				PixelX:  x,
 				PixelY:  y,
@@ -83,7 +83,7 @@ func (l *Level) createRoom(room Rect) {
 			l.Tiles[index].IsWall = false
 
 			floor := NewFloorMesh(x, y, l.mm)
-			floor.SetRenderable(false)
+			floor.SetVisible(false)
 			l.Tiles[index].Mesh = floor
 		}
 	}
@@ -152,7 +152,7 @@ func (l *Level) createHorizontalTunnel(x1, x2, y int) {
 			l.Tiles[index].Blocked = false
 			l.Tiles[index].IsWall = false
 			floor := NewFloorMesh(x, y, l.mm)
-			floor.SetRenderable(false)
+			floor.SetVisible(false)
 
 			l.Tiles[index].Mesh = floor
 		}
@@ -168,7 +168,7 @@ func (l *Level) createVerticalTunnel(y1, y2, x int) {
 			l.Tiles[index].Blocked = false
 			l.Tiles[index].IsWall = false
 			floor := NewFloorMesh(x, y, l.mm)
-			floor.SetRenderable(false)
+			floor.SetVisible(false)
 
 			l.Tiles[index].Mesh = floor
 		}

@@ -104,19 +104,19 @@ func (g *Game) TryMovePlayers() {
 				if level.PlayerVisible.IsVisible(x, y) {
 					tile.IsRevealed = true
 
-					tile.Mesh.SetRenderable(true)
+					tile.Mesh.SetVisible(true)
 					if tile.IsWall {
 						tile.Mesh.SetMaterial(solidMat)
 					}
 				} else {
 					if !tile.IsRevealed {
-						tile.Mesh.SetRenderable(false)
+						tile.Mesh.SetVisible(false)
 						continue
 					}
 
 					if tile.IsWall {
 						tile.Mesh.SetMaterial(wireframeMat)
-						tile.Mesh.SetRenderable(true)
+						tile.Mesh.SetVisible(true)
 						continue
 					}
 				}
