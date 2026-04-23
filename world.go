@@ -12,6 +12,7 @@ import (
 
 var position *ecs.Component
 var renderable *ecs.Component
+var monster *ecs.Component
 
 func InitWorld(scene *core.Node, startLevel Level) (*ecs.Manager, map[string]ecs.Tag) {
 	tags := map[string]ecs.Tag{}
@@ -25,10 +26,11 @@ func InitWorld(scene *core.Node, startLevel Level) (*ecs.Manager, map[string]ecs
 	player := mgr.NewComponent()
 	movable := mgr.NewComponent()
 
-	mesh := loadElfMesh()
-	scene.Add(mesh)
+	elfMesh := loadElfMesh()
+	scene.Add(elfMesh)
+	elfMesh.SetVisible(true)
 
-	monster := mgr.NewComponent()
+	monster = mgr.NewComponent()
 
 	// Get First Room
 	startRoom := startLevel.Rooms[0]
@@ -38,7 +40,7 @@ func InitWorld(scene *core.Node, startLevel Level) (*ecs.Manager, map[string]ecs
 	mgr.NewEntity().
 		AddComponent(player, Player{}).
 		AddComponent(renderable, &Renderable{
-			node: mesh,
+			node: elfMesh,
 		}).
 		AddComponent(movable, Movable{}).
 		AddComponent(position, &Position{
@@ -67,12 +69,12 @@ func InitWorld(scene *core.Node, startLevel Level) (*ecs.Manager, map[string]ecs
 
 	for _, room := range startLevel.Rooms {
 		if room.X1 != startRoom.X1 {
-			// TODO: change for an skeleton model
 			monsterMesh := loadElfMesh()
+			//monsterMesh := loadSkeletonMesh()
 			// Make it taller to separate from player
-			monsterMesh.GetNode().SetScale(0.01, 0.02, 0.01)
-			monsterMesh.GetNode().UpdateMatrix()
-			monsterMesh.GetNode().SetVisible(false)
+			//monsterMesh.GetNode().SetScale(0.01, 0.02, 0.01)
+			//monsterMesh.GetNode().UpdateMatrix()
+			monsterMesh.SetVisible(false)
 
 			scene.Add(monsterMesh)
 
@@ -97,26 +99,34 @@ func InitWorld(scene *core.Node, startLevel Level) (*ecs.Manager, map[string]ecs
 }
 
 func loadElfMesh() core.INode {
+	return loadMesh("assets/elf-wizard.glb", 0, 0.01, tileHeight)
+}
+
+func loadSkeletonMesh() core.INode {
+	return loadMesh("assets/skeleton-axe-wielder.glb", 1, 0.03, -1.8)
+}
+
+func loadMesh(path string, meshIndex int, scaleFactor float32, zOffset float32) core.INode {
 	// FIXME: use the game logger
 	log := slog.Default()
 
-	model, err := gltf.ParseBin("assets/elf-wizard.glb")
+	model, err := gltf.ParseBin(path)
 	if err != nil {
 		panic(err)
 	}
 	log.Info("load model", "len(meshes)", len(model.Meshes))
 
-	mesh, err := model.LoadMesh(0)
+	mesh, err := model.LoadMesh(meshIndex)
 	if err != nil {
 		panic(err)
 	}
 
 	meshNode := mesh.GetNode()
-	meshNode.SetScale(0.01, 0.01, 0.01)
+	meshNode.SetScale(scaleFactor, scaleFactor, scaleFactor)
 	// depends on the model size I suppose
-	meshNode.SetPosition(1, 0.7+tileHeight, 1)
+	meshNode.SetPosition(1, 0.7+zOffset, 1)
 	// TODO add to scene somehow
-	log.Info("elf wizard", "scale", mesh.Scale())
+	log.Info("scale", "file_path", path, "scale", mesh.Scale())
 
 	return mesh
 }
