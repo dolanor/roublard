@@ -4,7 +4,8 @@ import (
 	"log/slog"
 )
 
-func ProcessRenderables(game *Game, level Level /* TODO , ??? */) {
+func ProcessRenderables(game *Game, level *Level /* TODO , ??? */) {
+
 	for _, res := range game.World.Query(game.WorldTags["renderables"]) {
 		_ = res
 		pos, ok := res.Components[position].(*Position)
@@ -18,7 +19,11 @@ func ProcessRenderables(game *Game, level Level /* TODO , ??? */) {
 
 		node.node.GetNode().SetPosition(float32(pos.X), 0.7+tileHeight, float32(pos.Y))
 
-		if level.PlayerVisible.IsVisible(pos.X, pos.Y) {
+		level.mu.Lock()
+		isVisible := level.PlayerVisible.IsVisible(pos.X, pos.Y)
+		level.mu.Unlock()
+
+		if isVisible {
 			node.node.SetVisible(true)
 		} else {
 			node.node.SetVisible(false)

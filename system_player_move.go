@@ -90,7 +90,10 @@ func (g *Game) TryMovePlayers() {
 		}
 		pos.X += x
 		pos.Y += y
+
+		level.mu.Lock()
 		level.PlayerVisible.Compute(level, pos.X, pos.Y, 8)
+		level.mu.Unlock()
 
 		solidMat := level.mm.Get(assets.MaterialID("wall"))
 		wireframeMat := level.mm.Get(assets.MaterialID("wallwf"))
@@ -101,7 +104,11 @@ func (g *Game) TryMovePlayers() {
 				index := level.GetIndexFromXY(x, y)
 				tile := &level.Tiles[index]
 
-				if level.PlayerVisible.IsVisible(x, y) {
+				level.mu.Lock()
+				isVisible := level.PlayerVisible.IsVisible(x, y)
+				level.mu.Unlock()
+
+				if isVisible {
 					tile.IsRevealed = true
 
 					tile.Mesh.SetVisible(true)

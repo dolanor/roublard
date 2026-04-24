@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log/slog"
+	"sync"
 
 	"github.com/g3n/engine/geometry"
 	"github.com/g3n/engine/graphic"
@@ -32,8 +33,10 @@ type Level struct {
 	Tiles []Tile
 	Rooms []Rect
 
-	mm            *assets.MaterialManager
-	gameData      GameData
+	mm       *assets.MaterialManager
+	gameData GameData
+
+	mu            sync.Mutex
 	PlayerVisible *fov.View
 }
 
@@ -189,7 +192,7 @@ func (l *Level) createVerticalTunnel(y1, y2, x int) {
 	}
 }
 
-func (level Level) InBounds(x, y int) bool {
+func (level *Level) InBounds(x, y int) bool {
 	gd := NewGameData()
 	if x < 0 || x > gd.ScreenWidth || y < 0 || y > gd.ScreenHeight {
 		return false
@@ -198,7 +201,7 @@ func (level Level) InBounds(x, y int) bool {
 }
 
 // TODO: Change this to check for WALL, not blocked
-func (level Level) IsOpaque(x, y int) bool {
+func (level *Level) IsOpaque(x, y int) bool {
 	idx := level.GetIndexFromXY(x, y)
 	return level.Tiles[idx].TileType == WALL
 }

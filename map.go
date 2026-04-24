@@ -4,14 +4,14 @@ import "github.com/g3n/engine/core"
 
 type GameMap struct {
 	Dungeons     []Dungeon
-	CurrentLevel Level
+	CurrentLevel *Level
 }
 
 func NewGameMap(scene *core.Node) GameMap {
 	var dungeons []Dungeon
-	var levels []Level
+	var levels []*Level
 	l := NewLevel()
-	levels = append(levels, l)
+	levels = append(levels, &l)
 
 	tiles := l.Tiles
 	for _, t := range tiles {
@@ -27,6 +27,6 @@ func NewGameMap(scene *core.Node) GameMap {
 
 	return GameMap{
 		Dungeons:     dungeons,
-		CurrentLevel: l,
+		CurrentLevel: &l,
 	}
 }

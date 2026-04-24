@@ -14,7 +14,7 @@ var position *ecs.Component
 var renderable *ecs.Component
 var monster *ecs.Component
 
-func InitWorld(scene *core.Node, startLevel Level) (*ecs.Manager, map[string]ecs.Tag) {
+func InitWorld(scene *core.Node, startLevel *Level) (*ecs.Manager, map[string]ecs.Tag) {
 	tags := map[string]ecs.Tag{}
 
 	mgr := ecs.NewManager()
