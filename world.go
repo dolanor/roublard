@@ -69,7 +69,7 @@ func InitWorld(scene *core.Node, startLevel *Level) (*ecs.Manager, map[string]ec
 
 	for _, room := range startLevel.Rooms {
 		if room.X1 != startRoom.X1 {
-			monsterMesh := loadElfMesh()
+			monsterMesh := loadGoblinJanitorMesh()
 			//monsterMesh := loadSkeletonMesh()
 			// Make it taller to separate from player
 			//monsterMesh.GetNode().SetScale(0.01, 0.02, 0.01)
@@ -104,6 +104,10 @@ func loadElfMesh() core.INode {
 
 func loadSkeletonMesh() core.INode {
 	return loadMesh("assets/skeleton-axe-wielder.glb", 1, 0.03, -1.8)
+}
+
+func loadGoblinJanitorMesh() core.INode {
+	return loadMesh("assets/goblin-janitor.glb", 1, 0.03, -1.8)
 }
 
 func loadMesh(path string, meshIndex int, scaleFactor float32, zOffset float32) core.INode {
