@@ -1,32 +1,22 @@
 package main
 
 import (
-	"log/slog"
+	_ "math" // useless, just to make the diff more palatable with rrogue
 )
 
-func ProcessRenderables(game *Game, level *Level /* TODO , ??? */) {
-
-	for _, res := range game.World.Query(game.WorldTags["renderables"]) {
-		_ = res
-		pos, ok := res.Components[position].(*Position)
-		if !ok {
-			slog.Error("bad pos", "pos", pos)
-		}
-		node, ok := res.Components[renderable].(*Renderable)
-		if !ok {
-			slog.Error("bad node", "node", node)
-		}
+func ProcessRenderables(g *Game, level *Level /* TODO , ??? */) {
+	for _, result := range g.World.Query(g.WorldTags["renderables"]) {
+		pos := result.Components[position].(*Position)
+		node := result.Components[renderable].(*Renderable)
 
 		node.node.GetNode().SetPosition(float32(pos.X), 0.7+tileHeight, float32(pos.Y))
-
 		level.mu.Lock()
-		isVisible := level.PlayerVisible.IsVisible(pos.X, pos.Y)
-		level.mu.Unlock()
-
-		if isVisible {
+		if level.PlayerVisible.IsVisible(pos.X, pos.Y) {
 			node.node.SetVisible(true)
 		} else {
 			node.node.SetVisible(false)
 		}
+		level.mu.Unlock()
+
 	}
 }

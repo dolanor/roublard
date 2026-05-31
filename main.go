@@ -1,114 +1,56 @@
 package main
 
 import (
-	"log/slog"
-	"time"
-
 	"github.com/bytearena/ecs"
-	"github.com/g3n/engine/app"
-	"github.com/g3n/engine/camera"
-	"github.com/g3n/engine/core"
-	"github.com/g3n/engine/gls"
-	"github.com/g3n/engine/gui"
-	"github.com/g3n/engine/light"
-	"github.com/g3n/engine/math32"
-	"github.com/g3n/engine/renderer"
 	"github.com/g3n/engine/window"
 )
 
-func main() {
-	a := app.App(1280, 800, "Roublard")
-	a.IWindow.SetFullScreen(true)
-
-	scene := core.NewNode()
-
-	cam := camera.New(0)
-	cam.SetPosition(40, 50, 25)
-	cam.LookAt(&math32.Vector3{40, 0, 25}, &math32.Vector3{0, 0, -1})
-
-	ctl := camera.NewOrbitControl(cam)
-	ctl.SetTarget(math32.Vector3{40, 0, 25})
-
-	g := NewGame(a, scene, cam, slog.Default())
-
-	a.Run(g.Update)
-}
-
 type Game struct {
-	app         *app.Application
-	scene       *core.Node
-	cam         *camera.Camera
-	orthoToggle bool
-
-	gameMap   *GameMap
-	World     *ecs.Manager
-	WorldTags map[string]ecs.Tag
-
+	Map         *GameMap
+	World       *ecs.Manager
+	WorldTags   map[string]ecs.Tag
 	Turn        TurnState
 	TurnCounter int
-	// FIXME: maybe protect it with a mutex
-	currentX int
-	currentY int
-
-	log *slog.Logger
+	Extras      *GameExtras
 }
 
-func NewGame(app *app.Application, scene *core.Node, cam *camera.Camera, log *slog.Logger) *Game {
-	app.Gls().ClearColor(.5, .5, .5, 1)
-	//app.Gls().ClearColor(0, 0, 0, 1)
+// NewGame creates a new Game Object and initializes the data
+// This is a pretty solid refactor candidate for later
+func NewGame(extras *GameExtras) *Game {
+	g := &Game{}
+	g.Map = NewGameMap(extras.scene)
+	world, tags := InitializeWorld(g.Map.CurrentLevel, extras.scene)
 
-	onResize := func(_ string, _ any) {
-		w, h := app.GetSize()
-		app.Gls().Viewport(0, 0, int32(w), int32(h))
-		cam.SetAspect(float32(w) / float32(h))
-	}
+	g.WorldTags = tags
+	g.World = world
+	g.Turn = PlayerTurn
+	g.TurnCounter = 0
+	g.Extras = extras
+	go g.UpdateLogicLoop()
+	return g
 
-	app.Subscribe(window.OnWindowSize, onResize)
-	onResize("", nil)
-
-	// add a point light
-	pointLight := light.NewPoint(&math32.Color{1, 1, 1}, 30)
-	pointLight.SetPosition(1, 1, 2)
-
-	gui.Manager().Set(scene)
-	gm := NewGameMap(scene)
-
-	// add everything to the scene
-	//scene.Add(light.NewAmbient(&math32.Color{1, 1, 1}, .8))
-	scene.Add(pointLight)
-	scene.Add(cam)
-
-	world, tags := InitWorld(scene, gm.CurrentLevel)
-
-	g := Game{
-		app:   app,
-		scene: scene,
-		cam:   cam,
-
-		gameMap:   &gm,
-		World:     world,
-		WorldTags: tags,
-
-		Turn: PlayerTurn,
-
-		log: log,
-	}
-
-	app.Subscribe(window.OnKeyDown, g.onKey)
-
-	go g.logicUpdateLoop()
-
-	return &g
 }
 
-func (g *Game) Update(renderer *renderer.Renderer, deltaTime time.Duration) {
-	log := g.log.With("func", "update")
-	g.app.Gls().Clear(gls.DEPTH_BUFFER_BIT | gls.STENCIL_BUFFER_BIT | gls.COLOR_BUFFER_BIT)
-
-	ProcessRenderables(g, g.gameMap.CurrentLevel)
-
-	err := renderer.Render(g.scene, g.cam)
-	if err != nil {
-		log.Error("render", "error", err)
+// Update is called each tic.
+func (g *Game) UpdateLogic() error {
+	g.TurnCounter++
+	if g.Turn == PlayerTurn && g.TurnCounter > 20 {
+		TryMovePlayer(g)
 	}
+	if g.Turn == MonsterTurn {
+		UpdateMonster(g)
+	}
+
+	return nil
+
+}
+
+func main() {
+	extras := NewG3NExtras()
+
+	g := NewGame(extras)
+
+	g.Extras.app.Subscribe(window.OnKeyDown, g.onKey)
+
+	g.Extras.app.Run(g.Update)
 }

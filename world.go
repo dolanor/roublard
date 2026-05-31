@@ -1,43 +1,35 @@
 package main
 
 import (
-	"log/slog"
-
 	"github.com/bytearena/ecs"
 	"github.com/g3n/engine/core"
-	"github.com/g3n/engine/light"
-	"github.com/g3n/engine/loader/gltf"
-	"github.com/g3n/engine/math32"
 )
 
 var position *ecs.Component
 var renderable *ecs.Component
 var monster *ecs.Component
 
-func InitWorld(scene *core.Node, startLevel *Level) (*ecs.Manager, map[string]ecs.Tag) {
-	tags := map[string]ecs.Tag{}
-
-	mgr := ecs.NewManager()
+func InitializeWorld(startingLevel *Level, scene *core.Node) (*ecs.Manager, map[string]ecs.Tag) {
+	tags := make(map[string]ecs.Tag)
+	manager := ecs.NewManager()
 
 	// WARNING: this is global state
-	position = mgr.NewComponent()
-	renderable = mgr.NewComponent()
-
-	player := mgr.NewComponent()
-	movable := mgr.NewComponent()
+	player := manager.NewComponent()
+	position = manager.NewComponent()
+	renderable = manager.NewComponent()
+	movable := manager.NewComponent()
+	monster = manager.NewComponent()
 
 	elfMesh := loadElfMesh()
 	scene.Add(elfMesh)
 	elfMesh.SetVisible(true)
 
-	monster = mgr.NewComponent()
-
 	// Get First Room
-	startRoom := startLevel.Rooms[0]
-	x, y := startRoom.Center()
+	startingRoom := startingLevel.Rooms[0]
+	x, y := startingRoom.Center()
 
 	// Define the elf wizard in the ECS
-	mgr.NewEntity().
+	manager.NewEntity().
 		AddComponent(player, Player{}).
 		AddComponent(renderable, &Renderable{
 			node: elfMesh,
@@ -48,39 +40,17 @@ func InitWorld(scene *core.Node, startLevel *Level) (*ecs.Manager, map[string]ec
 			Y: y,
 		})
 
-	pointLight := light.NewPoint(&math32.Color{1, .5, 0}, 30)
-	pointLight.SetPosition(1, 1, 2)
-	scene.Add(pointLight)
+	addTorchLight(scene, manager, player, movable, x, y)
 
-	// Add the movable light (invisible torch for now) in the ECS
-	mgr.NewEntity().
-		AddComponent(player, Player{}).
-		AddComponent(renderable, &Renderable{
-			node: pointLight,
-		}).
-		AddComponent(movable, Movable{}).
-		AddComponent(position, &Position{
-			X: x,
-			Y: y,
-		})
-
-	players := ecs.BuildTag(player, position)
-	tags["players"] = players
-
-	for _, room := range startLevel.Rooms {
-		if room.X1 != startRoom.X1 {
-			monsterMesh := loadGoblinJanitorMesh()
-			//monsterMesh := loadSkeletonMesh()
-			// Make it taller to separate from player
-			//monsterMesh.GetNode().SetScale(0.01, 0.02, 0.01)
-			//monsterMesh.GetNode().UpdateMatrix()
+	//Add a Monster in each room except the player's room
+	for _, room := range startingLevel.Rooms {
+		if room.X1 != startingRoom.X1 {
+			monsterMesh := loadElfMesh()
 			monsterMesh.SetVisible(false)
-
 			scene.Add(monsterMesh)
 
 			mX, mY := room.Center()
-
-			mgr.NewEntity().
+			manager.NewEntity().
 				AddComponent(monster, &Monster{
 					Name: "Skeleton",
 				}).
@@ -91,51 +61,18 @@ func InitWorld(scene *core.Node, startLevel *Level) (*ecs.Manager, map[string]ec
 					X: mX,
 					Y: mY,
 				})
+
 		}
 	}
+
+	players := ecs.BuildTag(player, position)
+	tags["players"] = players
 
 	renderables := ecs.BuildTag(renderable, position)
 	tags["renderables"] = renderables
 
-	monsters := ecs.BuildTag(renderable, position)
+	monsters := ecs.BuildTag(monster, position)
 	tags["monsters"] = monsters
 
-	return mgr, tags
-}
-
-func loadElfMesh() core.INode {
-	return loadMesh("assets/elf-wizard.glb", 0, 0.01, tileHeight)
-}
-
-func loadSkeletonMesh() core.INode {
-	return loadMesh("assets/skeleton-axe-wielder.glb", 1, 0.03, -1.8)
-}
-
-func loadGoblinJanitorMesh() core.INode {
-	return loadMesh("assets/goblin-janitor.glb", 1, 0.03, -1.8)
-}
-
-func loadMesh(path string, meshIndex int, scaleFactor float32, zOffset float32) core.INode {
-	// FIXME: use the game logger
-	log := slog.Default()
-
-	model, err := gltf.ParseBin(path)
-	if err != nil {
-		panic(err)
-	}
-	log.Info("load model", "len(meshes)", len(model.Meshes))
-
-	mesh, err := model.LoadMesh(meshIndex)
-	if err != nil {
-		panic(err)
-	}
-
-	meshNode := mesh.GetNode()
-	meshNode.SetScale(scaleFactor, scaleFactor, scaleFactor)
-	// depends on the model size I suppose
-	meshNode.SetPosition(1, 0.7+zOffset, 1)
-	// TODO add to scene somehow
-	log.Info("scale", "file_path", path, "scale", mesh.Scale())
-
-	return mesh
+	return manager, tags
 }

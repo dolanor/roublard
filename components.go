@@ -4,10 +4,6 @@ import "github.com/g3n/engine/core"
 
 type Player struct{}
 
-type Monster struct {
-	Name string
-}
-
 type Position struct {
 	X int
 	Y int
@@ -18,3 +14,7 @@ type Renderable struct {
 }
 
 type Movable struct{}
+
+type Monster struct {
+	Name string
+}

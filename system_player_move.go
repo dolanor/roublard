@@ -2,139 +2,57 @@ package main
 
 import (
 	"log/slog"
-	"time"
-
-	"github.com/dolanor/roublard/assets"
-	"github.com/g3n/engine/camera"
-	"github.com/g3n/engine/window"
 )
 
-type Move string
+func TryMovePlayer(g *Game) {
+	players := g.WorldTags["players"]
 
-const (
-	MoveLeft  Move = "move_left"
-	MoveRight Move = "move_right"
-	MoveUp    Move = "move_up"
-	MoveDown  Move = "move_down"
-)
+	x := g.Extras.currentX
+	y := g.Extras.currentY
 
-func (g *Game) logicUpdateLoop() {
-	for range time.Tick(time.Second / 120) {
-		g.TurnCounter++
-		if g.Turn == PlayerTurn && g.TurnCounter > 20 {
-			g.TryMovePlayers()
-		}
-
-		if g.Turn == MonsterTurn {
-			UpdateMonster(g)
-		}
-	}
-}
-
-func (g *Game) onKey(evname string, ev any) {
-	g.currentX, g.currentY = g.processKeys(ev)
-}
-
-func (g *Game) processKeys(ev any) (x, y int) {
-
-	kev := ev.(*window.KeyEvent)
-	switch kev.Key {
-	case window.KeyE:
+	if ebiten.IsKeyPressed(ebiten.KeyUp) {
 		y = -1
-	case window.KeyD:
-		y = 1
-	case window.KeyS:
-		x = -1
-	case window.KeyF:
-		x = 1
-
-	case window.KeyM:
-		if kev.Mods == window.ModControl {
-			g.app.Exit()
-		}
-
-	case window.KeyU:
-		if kev.Mods == window.ModControl {
-			if g.orthoToggle {
-				g.cam.SetProjection(camera.Orthographic)
-				g.orthoToggle = !g.orthoToggle
-			} else {
-				g.cam.SetProjection(camera.Perspective)
-				g.orthoToggle = !g.orthoToggle
-			}
-
-		}
 	}
 
-	return x, y
-}
+	if ebiten.IsKeyPressed(ebiten.KeyDown) {
+		y = 1
+	}
 
-func (g *Game) TryMovePlayers() {
-	level := g.gameMap.CurrentLevel
+	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
+		x = -1
+	}
 
-	x, y := g.currentX, g.currentY
-	gd := level.gameData
+	if ebiten.IsKeyPressed(ebiten.KeyRight) {
+		x = 1
+	}
 
-	for _, res := range g.World.Query(g.WorldTags["players"]) {
-		pos, ok := res.Components[position].(*Position)
+	level := g.Map.CurrentLevel
+
+	for _, result := range g.World.Query(players) {
+		pos, ok := result.Components[position].(*Position)
 		if !ok {
 			slog.Error("bad pos", "pos", pos)
 			panic("bad pos")
 		}
 
 		index := level.GetIndexFromXY(pos.X+x, pos.Y+y)
-		tile := &level.Tiles[index]
-
 		//slog.Info("pos", "X", pos.X, "Y", pos.Y, "block", tile.Blocked)
 
-		if tile.Blocked {
-			continue
+		tile := &level.Tiles[index]
+		if tile.Blocked != true {
+			pos.X += x
+			pos.Y += y
 		}
-		pos.X += x
-		pos.Y += y
 
 		level.mu.Lock()
 		level.PlayerVisible.Compute(level, pos.X, pos.Y, 8)
 		level.mu.Unlock()
 
-		solidMat := level.mm.Get(assets.MaterialID("wall"))
-		wireframeMat := level.mm.Get(assets.MaterialID("wallwf"))
-		_, _ = solidMat, wireframeMat
-		// We decide to check for every tile in the level if it should be rendered or not
-		for x := 0; x < gd.ScreenWidth; x++ {
-			for y := 0; y < gd.ScreenHeight; y++ {
-				index := level.GetIndexFromXY(x, y)
-				tile := &level.Tiles[index]
-
-				level.mu.Lock()
-				isVisible := level.PlayerVisible.IsVisible(x, y)
-				level.mu.Unlock()
-
-				if isVisible {
-					tile.IsRevealed = true
-
-					tile.Mesh.SetVisible(true)
-					if tile.IsWall {
-						tile.Mesh.SetMaterial(solidMat)
-					}
-				} else {
-					if !tile.IsRevealed {
-						tile.Mesh.SetVisible(false)
-						continue
-					}
-
-					if tile.IsWall {
-						tile.Mesh.SetMaterial(wireframeMat)
-						tile.Mesh.SetVisible(true)
-						continue
-					}
-				}
-			}
-		}
+		updateMapVisibility(level)
 	}
 
 	if x != 0 || y != 0 {
-		g.currentX, g.currentY = 0, 0
+		g.Extras.currentX, g.Extras.currentY = 0, 0
 		g.Turn = GetNextState(g.Turn)
 		g.TurnCounter = 0
 	}

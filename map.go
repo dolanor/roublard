@@ -7,26 +7,19 @@ type GameMap struct {
 	CurrentLevel *Level
 }
 
-func NewGameMap(scene *core.Node) GameMap {
-	var dungeons []Dungeon
-	var levels []*Level
+func NewGameMap(scene *core.Node) *GameMap {
 	l := NewLevel()
+	levels := make([]*Level, 0)
 	levels = append(levels, &l)
+	d := Dungeon{Name: "default", Levels: levels}
+	dungeons := make([]Dungeon, 0)
 
-	tiles := l.Tiles
-	for _, t := range tiles {
-		scene.Add(t.Mesh)
-	}
-
-	d := Dungeon{
-		Name:   "default",
-		Levels: levels,
+	for _, t := range l.Tiles {
+		scene.Add(t.Image)
 	}
 
 	dungeons = append(dungeons, d)
+	gm := &GameMap{Dungeons: dungeons, CurrentLevel: &l}
+	return gm
 
-	return GameMap{
-		Dungeons:     dungeons,
-		CurrentLevel: &l,
-	}
 }
