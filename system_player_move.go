@@ -24,8 +24,10 @@ func (g *Game) logicUpdateLoop() {
 		if g.Turn == PlayerTurn && g.TurnCounter > 20 {
 			g.TryMovePlayers()
 		}
-		// Obviously just for now
-		g.Turn = PlayerTurn
+
+		if g.Turn == MonsterTurn {
+			UpdateMonster(g)
+		}
 	}
 }
 

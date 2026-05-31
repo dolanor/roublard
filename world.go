@@ -81,7 +81,9 @@ func InitWorld(scene *core.Node, startLevel *Level) (*ecs.Manager, map[string]ec
 			mX, mY := room.Center()
 
 			mgr.NewEntity().
-				AddComponent(monster, Monster{}).
+				AddComponent(monster, &Monster{
+					Name: "Skeleton",
+				}).
 				AddComponent(renderable, &Renderable{
 					node: monsterMesh,
 				}).
@@ -94,6 +96,9 @@ func InitWorld(scene *core.Node, startLevel *Level) (*ecs.Manager, map[string]ec
 
 	renderables := ecs.BuildTag(renderable, position)
 	tags["renderables"] = renderables
+
+	monsters := ecs.BuildTag(renderable, position)
+	tags["monsters"] = monsters
 
 	return mgr, tags
 }
