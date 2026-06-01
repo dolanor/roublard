@@ -15,7 +15,7 @@ func loadElfMesh() core.INode {
 }
 
 func loadSkeletonMesh() core.INode {
-	return loadMesh("assets/skeleton-axe-wielder.glb", 1, 0.03, -1.8)
+	return loadMesh("assets/skeleton-axe.glb", 0, 0.03, -1.8)
 }
 
 func loadGoblinJanitorMesh() core.INode {

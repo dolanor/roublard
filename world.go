@@ -45,7 +45,7 @@ func InitializeWorld(startingLevel *Level, scene *core.Node) (*ecs.Manager, map[
 	//Add a Monster in each room except the player's room
 	for _, room := range startingLevel.Rooms {
 		if room.X1 != startingRoom.X1 {
-			monsterMesh := loadElfMesh()
+			monsterMesh := loadSkeletonMesh()
 			monsterMesh.SetVisible(false)
 			scene.Add(monsterMesh)
 
