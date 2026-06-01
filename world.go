@@ -38,6 +38,7 @@ func InitializeWorld(startingLevel *Level, scene *core.Node) (*ecs.Manager, map[
 		AddComponent(position, &Position{
 			X: x,
 			Y: y,
+			Z: elfMesh.Position().Z,
 		})
 
 	addTorchLight(scene, manager, player, movable, x, y)
@@ -60,6 +61,7 @@ func InitializeWorld(startingLevel *Level, scene *core.Node) (*ecs.Manager, map[
 				AddComponent(position, &Position{
 					X: mX,
 					Y: mY,
+					Z: monsterMesh.Position().Z,
 				})
 
 		}
