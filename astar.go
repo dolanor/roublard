@@ -17,6 +17,10 @@ type node struct {
 	f        int
 }
 
+func (n *node) isEqual(other *node) bool {
+	return (n.Position.X == other.Position.X && n.Position.Y == other.Position.Y)
+}
+
 func newNode(parent *node, position *Position) *node {
 	n := node{}
 	n.Parent = parent
@@ -28,8 +32,27 @@ func newNode(parent *node, position *Position) *node {
 	return &n
 }
 
-func (n *node) isEqual(other *node) bool {
-	return (n.Position.X == other.Position.X && n.Position.Y == other.Position.Y)
+func reverseSlice(data interface{}) {
+	value := reflect.ValueOf(data)
+	if value.Kind() != reflect.Slice {
+		panic(errors.New("data must be a slice type"))
+	}
+	valueLen := value.Len()
+	for i := 0; i <= int((valueLen-1)/2); i++ {
+		reverseIndex := valueLen - 1 - i
+		tmp := value.Index(reverseIndex).Interface()
+		value.Index(reverseIndex).Set(value.Index(i))
+		value.Index(i).Set(reflect.ValueOf(tmp))
+	}
+}
+
+func isInSlice(s []*node, target *node) bool {
+	for _, n := range s {
+		if n.isEqual(target) {
+			return true
+		}
+	}
+	return false
 }
 
 // AStar implements the AStar Algorithm.
@@ -39,6 +62,7 @@ type AStar struct{}
 // a list of Positions which is the path between the points.
 func (as AStar) GetPath(level Level, start *Position, end *Position) []Position {
 	gd := NewGameData()
+
 	openList := make([]*node, 0)
 	closedList := make([]*node, 0)
 
@@ -58,11 +82,11 @@ func (as AStar) GetPath(level Level, start *Position, end *Position) []Position 
 		if len(openList) == 0 {
 			break
 		}
-
+		//Get the current node
 		currentNode := openList[0]
 		currentIndex := 0
 
-		// Get the current node
+		//Get the node with the smallest f value
 		for index, item := range openList {
 			if item.f < currentNode.f {
 				currentNode = item
@@ -70,6 +94,7 @@ func (as AStar) GetPath(level Level, start *Position, end *Position) []Position 
 			}
 		}
 
+		//Move from open to closed list
 		openList = append(openList[:currentIndex], openList[currentIndex+1:]...)
 		closedList = append(closedList, currentNode)
 
@@ -90,18 +115,24 @@ func (as AStar) GetPath(level Level, start *Position, end *Position) []Position 
 			return path
 		}
 
+		//Ok, if we are here, we are not finished yet
+
 		edges := make([]*node, 0)
+		//Now we get each node in the four cardinal directions
+		//Note:  If you wish to add Diagonal movement, you can do so by getting all 8 positions
 		if currentNode.Position.Y > 0 {
 			tile := level.Tiles[level.GetIndexFromXY(currentNode.Position.X, currentNode.Position.Y-1)]
 			if tile.TileType == WALL {
+				//The location is in the map bounds and is walkable
 				upNodePosition := Position{
 					X: currentNode.Position.X,
 					Y: currentNode.Position.Y - 1,
 				}
-
 				newNode := newNode(currentNode, &upNodePosition)
 				edges = append(edges, newNode)
+
 			}
+
 		}
 		if currentNode.Position.Y < gd.ScreenHeight {
 			tile := level.Tiles[level.GetIndexFromXY(currentNode.Position.X, currentNode.Position.Y+1)]
@@ -113,9 +144,10 @@ func (as AStar) GetPath(level Level, start *Position, end *Position) []Position 
 				}
 				newNode := newNode(currentNode, &downNodePosition)
 				edges = append(edges, newNode)
-			}
-		}
 
+			}
+
+		}
 		if currentNode.Position.X > 0 {
 			tile := level.Tiles[level.GetIndexFromXY(currentNode.Position.X-1, currentNode.Position.Y)]
 			if tile.TileType != WALL {
@@ -126,9 +158,10 @@ func (as AStar) GetPath(level Level, start *Position, end *Position) []Position 
 				}
 				newNode := newNode(currentNode, &leftNodePosition)
 				edges = append(edges, newNode)
-			}
-		}
 
+			}
+
+		}
 		if currentNode.Position.X < gd.ScreenWidth {
 			tile := level.Tiles[level.GetIndexFromXY(currentNode.Position.X+1, currentNode.Position.Y)]
 			if tile.TileType != WALL {
@@ -139,13 +172,17 @@ func (as AStar) GetPath(level Level, start *Position, end *Position) []Position 
 				}
 				newNode := newNode(currentNode, &rightNodePosition)
 				edges = append(edges, newNode)
+
 			}
+
 		}
+
 		//Now we iterate through the edges and put them in the open list.
 		for _, edge := range edges {
 			if isInSlice(closedList, edge) {
 				continue
 			}
+
 			edge.g = currentNode.g + 1
 			edge.h = edge.Position.GetManhattanDistance(endNodePlaceholder.Position)
 			edge.f = edge.g + edge.h
@@ -159,38 +196,16 @@ func (as AStar) GetPath(level Level, start *Position, end *Position) []Position 
 						break
 					}
 				}
+
 				if isFurther {
 					continue
 				}
+
 			}
 			openList = append(openList, edge)
 		}
+
 	}
 
 	return nil
-}
-
-func isInSlice(s []*node, target *node) bool {
-	for _, n := range s {
-		if n.isEqual(target) {
-			return true
-		}
-	}
-	return false
-}
-
-func reverseSlice(data interface{}) {
-	value := reflect.ValueOf(data)
-	if value.Kind() != reflect.Slice {
-		panic(errors.New("data must be a slice type"))
-	}
-
-	valueLen := value.Len()
-
-	for i := 0; i <= int((valueLen-1)/2); i++ {
-		reverseIndex := valueLen - 1 - i
-		tmp := value.Index(reverseIndex).Interface()
-		value.Index(reverseIndex).Set(value.Index(i))
-		value.Index(i).Set(reflect.ValueOf(tmp))
-	}
 }
