@@ -11,11 +11,11 @@ import (
 )
 
 func loadElfMesh() core.INode {
-	return loadMesh("assets/elf-wizard.glb", 0, 0.01, 0.8)
+	return loadMesh("assets/elf-wizard.glb", 0, 0.01, 0.7+tileHeight)
 }
 
 func loadSkeletonMesh() core.INode {
-	return loadMesh("assets/skeleton-axe.glb", 0, 0.03, 0+tileHeight)
+	return loadMesh("assets/skeleton-axe.glb", 0, 0.03, 0.05+tileHeight)
 }
 
 func loadGoblinJanitorMesh() core.INode {
