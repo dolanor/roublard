@@ -3,7 +3,6 @@ package main
 import (
 	"log/slog"
 
-	"github.com/bytearena/ecs"
 	"github.com/g3n/engine/core"
 	"github.com/g3n/engine/light"
 	"github.com/g3n/engine/loader/gltf"
@@ -44,23 +43,11 @@ func loadMesh(path string, meshIndex int, scaleFactor float32, zOffset float32) 
 	// TODO add to scene somehow
 	log.Info("scale", "file_path", path, "scale", mesh.Scale())
 
-	return mesh
-}
-
-func addTorchLight(scene *core.Node, manager *ecs.Manager, player *ecs.Component, movable *ecs.Component, x, y int) {
+	// add torch light
 	pointLight := light.NewPoint(&math32.Color{1, .5, 0}, 30)
 	pointLight.SetPosition(1, 1, 2)
-	scene.Add(pointLight)
 
-	// Add the movable light (invisible torch for now) in the ECS
-	manager.NewEntity().
-		AddComponent(player, Player{}).
-		AddComponent(renderable, &Renderable{
-			node: pointLight,
-		}).
-		AddComponent(movable, Movable{}).
-		AddComponent(position, &Position{
-			X: x,
-			Y: y,
-		})
+	meshNode.Add(pointLight)
+
+	return mesh
 }

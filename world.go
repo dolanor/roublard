@@ -41,8 +41,6 @@ func InitializeWorld(startingLevel *Level, scene *core.Node) (*ecs.Manager, map[
 			Z: elfMesh.Position().Z,
 		})
 
-	addTorchLight(scene, manager, player, movable, x, y)
-
 	//Add a Monster in each room except the player's room
 	for _, room := range startingLevel.Rooms {
 		if room.X1 != startingRoom.X1 {
