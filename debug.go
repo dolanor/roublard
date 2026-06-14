@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-func debugPrintTiles(tiles []MapTile, gameData GameData) {
+func debugPrintTiles(tiles []*MapTile, gameData GameData) {
 
 	fmt.Println("===============================")
 

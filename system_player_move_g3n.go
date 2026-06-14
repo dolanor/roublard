@@ -14,6 +14,7 @@ type ebitenFake struct {
 	KeyDown  string
 	KeyRight string
 	KeyLeft  string
+	KeyQ     string
 }
 
 func (ebitenFake) IsKeyPressed(key string) bool {
@@ -29,7 +30,7 @@ func updateMapVisibility(level *Level) {
 	for x := 0; x < gd.ScreenWidth; x++ {
 		for y := 0; y < gd.ScreenHeight; y++ {
 			index := level.GetIndexFromXY(x, y)
-			tile := &level.Tiles[index]
+			tile := level.Tiles[index]
 
 			level.mu.Lock()
 			isVisible := level.PlayerVisible.IsVisible(x, y)
@@ -87,7 +88,10 @@ func (g *Game) processKeys(ev any) (x, y int) {
 	case window.KeyM:
 		if kev.Mods == window.ModControl {
 			g.Extras.app.Exit()
+			return x, y
 		}
+		// should deal with turn taken to be full iso compliant, but I don't think it matters that much and I
+		// don't want to deal with this event logic now
 
 	case window.KeyU:
 		if kev.Mods == window.ModControl {
