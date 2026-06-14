@@ -122,7 +122,7 @@ func (as AStar) GetPath(level Level, start *Position, end *Position) []Position 
 		//Note:  If you wish to add Diagonal movement, you can do so by getting all 8 positions
 		if currentNode.Position.Y > 0 {
 			tile := level.Tiles[level.GetIndexFromXY(currentNode.Position.X, currentNode.Position.Y-1)]
-			if tile.TileType == WALL {
+			if tile.TileType != WALL {
 				//The location is in the map bounds and is walkable
 				upNodePosition := Position{
 					X: currentNode.Position.X,
