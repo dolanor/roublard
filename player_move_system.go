@@ -1,9 +1,5 @@
 package main
 
-import (
-	"log/slog"
-)
-
 func TryMovePlayer(g *Game) {
 	players := g.WorldTags["players"]
 	turnTaken := false
@@ -33,14 +29,8 @@ func TryMovePlayer(g *Game) {
 	level := g.Map.CurrentLevel
 
 	for _, result := range g.World.Query(players) {
-		pos, ok := result.Components[position].(*Position)
-		if !ok {
-			slog.Error("bad pos", "pos", pos)
-			panic("bad pos")
-		}
-
+		pos := result.Components[position].(*Position)
 		index := level.GetIndexFromXY(pos.X+x, pos.Y+y)
-		//slog.Info("pos", "X", pos.X, "Y", pos.Y, "block", tile.Blocked)
 
 		tile := level.Tiles[index]
 		if tile.Blocked != true {
