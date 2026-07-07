@@ -1,5 +1,7 @@
 package main
 
+import "github.com/dolanor/roublard/ebiten"
+
 func TryMovePlayer(g *Game) {
 	players := g.WorldTags["players"]
 	turnTaken := false

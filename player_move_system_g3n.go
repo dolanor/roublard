@@ -5,26 +5,13 @@ import (
 	"github.com/g3n/engine/window"
 
 	"github.com/dolanor/roublard/assets"
+	"github.com/dolanor/roublard/ebitenutil"
 )
-
-var ebiten ebitenFake
-
-type ebitenFake struct {
-	KeyUp    string
-	KeyDown  string
-	KeyRight string
-	KeyLeft  string
-	KeyQ     string
-}
-
-func (ebitenFake) IsKeyPressed(key string) bool {
-	return false
-}
 
 func updateMapVisibility(level *Level) {
 	gd := NewGameData()
-	solidMat := level.mm.Get(assets.MaterialID("wall"))
-	wireframeMat := level.mm.Get(assets.MaterialID("wallwf"))
+	solidMat := ebitenutil.MaterialManager.Get(assets.MaterialID("wall"))
+	wireframeMat := ebitenutil.MaterialManager.Get(assets.MaterialID("wallwf"))
 	_, _ = solidMat, wireframeMat
 	// We decide to check for every tile in the level if it should be rendered or not
 	for x := 0; x < gd.ScreenWidth; x++ {

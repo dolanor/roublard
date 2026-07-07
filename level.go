@@ -1,8 +1,11 @@
 package main
 
 import (
+	"log"
 	"sync"
 
+	"github.com/dolanor/roublard/ebiten"
+	"github.com/dolanor/roublard/ebitenutil"
 	"github.com/g3n/engine/graphic"
 	"github.com/norendren/go-fov/fov"
 )
@@ -33,14 +36,51 @@ type MapTile struct {
 	TileType   TileType
 }
 
+// NewLevel creates a new game level in a dungeon.
 func NewLevel() Level {
 	l := Level{}
+	var err error
+
+	floor, _, err = ebitenutil.NewImageFromFile("assets/floor.png")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	wall, _, err = ebitenutil.NewImageFromFile("assets/wall.png")
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	rooms := make([]Rect, 0)
 	l.Rooms = rooms
 	l.GenerateLevelTiles()
 	l.PlayerVisible = fov.New()
 	return l
+}
+
+// DrawLevel draws the level onto the screen.
+func (level *Level) DrawLevel(screen *ebiten.Image) {
+	gd := NewGameData()
+
+	for x := 0; x < gd.ScreenWidth; x++ {
+		for y := 0; y < gd.ScreenHeight; y++ {
+			idx := level.GetIndexFromXY(x, y)
+			tile := level.Tiles[idx]
+			isVis := level.PlayerVisible.IsVisible(x, y)
+			if isVis {
+				op := &ebiten.DrawImageOptions{}
+				op.GeoM.Translate(float64(tile.PixelX), float64(tile.PixelY))
+				screen.DrawImage(tile.Image, op)
+				level.Tiles[idx].IsRevealed = true
+			} else if tile.IsRevealed == true {
+				op := &ebiten.DrawImageOptions{}
+				op.GeoM.Translate(float64(tile.PixelX), float64(tile.PixelY))
+				op.ColorM.Translate(100, 100, 100, 0.35)
+				screen.DrawImage(tile.Image, op)
+			}
+		}
+	}
+
 }
 
 // GetIndexFromXY gets the index of the map array from a given X,Y TILE coordinate.

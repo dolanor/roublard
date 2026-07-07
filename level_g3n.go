@@ -34,3 +34,11 @@ func NewFloorMesh(x, y int, mm *assets.MaterialManager) *graphic.Mesh {
 	mesh.SetVisible(false)
 	return mesh
 }
+
+func CloneAndPosition(mesh *graphic.Mesh, x, y int) *graphic.Mesh {
+	m := mesh.Clone().(*graphic.Mesh)
+	m.SetPositionX(float32(x))
+	m.SetPositionZ(float32(y))
+
+	return m
+}
