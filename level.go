@@ -12,6 +12,9 @@ import (
 
 type TileType int
 
+var floor *graphic.Mesh
+var wall *graphic.Mesh
+
 const (
 	WALL TileType = iota
 	FLOOR
@@ -148,8 +151,7 @@ func (level *Level) createHorizontalTunnel(x1 int, x2 int, y int) {
 			level.Tiles[index].Blocked = false
 			level.Tiles[index].IsWall = false
 			level.Tiles[index].TileType = FLOOR
-			floor := NewFloorMesh(x, y, level.mm)
-			level.Tiles[index].Image = floor
+			level.Tiles[index].Image = CloneAndPosition(floor, x, y)
 
 		}
 	}
@@ -163,8 +165,8 @@ func (level *Level) createVerticalTunnel(y1 int, y2 int, x int) {
 			level.Tiles[index].Blocked = false
 			level.Tiles[index].IsWall = false
 			level.Tiles[index].TileType = FLOOR
-			floor := NewFloorMesh(x, y, level.mm)
-			level.Tiles[index].Image = floor
+			level.Tiles[index].Image = CloneAndPosition(floor, x, y)
+
 		}
 	}
 }
@@ -177,12 +179,11 @@ func (level *Level) createTiles() []*MapTile {
 	for x := 0; x < gd.ScreenWidth; x++ {
 		for y := 0; y < gd.ScreenHeight; y++ {
 			index = level.GetIndexFromXY(x, y)
-			wall := NewWallMesh(x, y, level.mm)
 			tile := MapTile{
-				PixelX:     x,
-				PixelY:     y,
+				PixelX: x * gd.TileWidth,
+				PixelY: y * gd.TileHeight,
 				Blocked:    true,
-				Image:      wall,
+				Image:      CloneAndPosition(wall, x, y),
 				IsRevealed: false,
 				TileType:   WALL,
 				IsWall:     true,
@@ -198,15 +199,14 @@ func (level *Level) createRoom(room Rect) {
 	for y := room.Y1 + 1; y < room.Y2; y++ {
 		for x := room.X1 + 1; x < room.X2; x++ {
 			index := level.GetIndexFromXY(x, y)
-
 			level.Tiles[index].Blocked = false
 			level.Tiles[index].TileType = FLOOR
-			floor := NewFloorMesh(x, y, level.mm)
-			level.Tiles[index].Image = floor
+			level.Tiles[index].Image = CloneAndPosition(floor, x, y)
 			level.Tiles[index].IsWall = false
 		}
 	}
 }
+
 func (level Level) InBounds(x, y int) bool {
 	gd := NewGameData()
 	if x < 0 || x > gd.ScreenWidth || y < 0 || y > gd.ScreenHeight {
