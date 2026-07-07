@@ -1,13 +1,10 @@
 package main
 
 import (
-	"log/slog"
 	"sync"
 
 	"github.com/g3n/engine/graphic"
 	"github.com/norendren/go-fov/fov"
-
-	"github.com/dolanor/roublard/assets"
 )
 
 type TileType int
@@ -23,9 +20,6 @@ type Level struct {
 	Rooms         []Rect
 	PlayerVisible *fov.View
 	mu            sync.Mutex
-
-	mm       *assets.MaterialManager
-	gameData GameData
 }
 
 // MapTile is a single Tile on a given level
@@ -41,15 +35,11 @@ type MapTile struct {
 
 func NewLevel() Level {
 	l := Level{}
-	l.mm = assets.NewMaterialManager()
 
 	rooms := make([]Rect, 0)
 	l.Rooms = rooms
 	l.GenerateLevelTiles()
 	l.PlayerVisible = fov.New()
-	slog.Info("rooms", "rooms", l.Rooms)
-	// TODO: reuse this in the future
-	l.gameData = NewGameData()
 	return l
 }
 
@@ -78,7 +68,6 @@ func (level *Level) GenerateLevelTiles() {
 		y := GetDiceRoll(gd.ScreenHeight - h - 1)
 		new_room := NewRect(x, y, w, h)
 
-		slog.Info("creating room", "i", idx, "room", new_room)
 		okToAdd := true
 
 		for _, otherRoom := range level.Rooms {
@@ -166,7 +155,6 @@ func (level *Level) createTiles() []*MapTile {
 }
 
 func (level *Level) createRoom(room Rect) {
-	slog.Info("carving room", "room", room)
 	for y := room.Y1 + 1; y < room.Y2; y++ {
 		for x := room.X1 + 1; x < room.X2; x++ {
 			index := level.GetIndexFromXY(x, y)
