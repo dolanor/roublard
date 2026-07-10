@@ -66,7 +66,7 @@ func NewG3NExtras() *GameExtras {
 	ctl.SetTarget(math32.Vector3{40, 0, 25})
 
 	a.Gls().ClearColor(.5, .5, .5, 1)
-	//app.Gls().ClearColor(0, 0, 0, 1)
+	//a.Gls().ClearColor(0, 0, 0, 1)
 
 	onResize := func(_ string, _ any) {
 		w, h := a.GetSize()

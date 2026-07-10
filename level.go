@@ -180,8 +180,8 @@ func (level *Level) createTiles() []*MapTile {
 		for y := 0; y < gd.ScreenHeight; y++ {
 			index = level.GetIndexFromXY(x, y)
 			tile := MapTile{
-				PixelX: x * gd.TileWidth,
-				PixelY: y * gd.TileHeight,
+				PixelX:     x * gd.TileWidth,
+				PixelY:     y * gd.TileHeight,
 				Blocked:    true,
 				Image:      CloneAndPosition(wall, x, y),
 				IsRevealed: false,
@@ -207,7 +207,6 @@ func (level *Level) createRoom(room Rect) {
 		}
 	}
 }
-
 func (level Level) InBounds(x, y int) bool {
 	gd := NewGameData()
 	if x < 0 || x > gd.ScreenWidth || y < 0 || y > gd.ScreenHeight {
