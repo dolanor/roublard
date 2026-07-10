@@ -189,6 +189,7 @@ func (level *Level) createTiles() []*MapTile {
 				IsWall:     true,
 			}
 			tiles[index] = &tile
+
 		}
 	}
 	debugPrintTiles(tiles, gd)

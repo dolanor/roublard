@@ -30,3 +30,6 @@ var (
 func IsKeyPressed(key string) bool {
 	return false
 }
+
+func SetWindowResizable(bool) {}
+func SetWindowTitle(string)   {}

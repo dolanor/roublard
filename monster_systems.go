@@ -32,6 +32,7 @@ func UpdateMonster(game *Game) {
 					nextTile.Blocked = true
 				}
 			}
+
 		}
 
 	}

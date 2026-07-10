@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/bytearena/ecs"
+	"github.com/dolanor/roublard/ebiten"
 	"github.com/g3n/engine/window"
 )
 
@@ -16,7 +17,8 @@ type Game struct {
 
 // NewGame creates a new Game Object and initializes the data
 // This is a pretty solid refactor candidate for later
-func NewGame(extras *GameExtras) *Game {
+func NewGame() *Game {
+	extras := NewG3NExtras()
 	g := &Game{}
 	g.Map = NewGameMap(extras.scene)
 	world, tags := InitializeWorld(g.Map.CurrentLevel, extras.scene)
@@ -45,10 +47,27 @@ func (g *Game) UpdateLogic() error {
 
 }
 
-func main() {
-	extras := NewG3NExtras()
+// Draw is called each draw cycle and is where we will blit.
+func (g *Game) Draw(screen *ebiten.Image) {
+	//Draw the Map
+	level := g.Map.CurrentLevel
+	level.DrawLevel(screen)
+	ProcessRenderables(g, level, screen)
+}
 
-	g := NewGame(extras)
+// Layout will return the screen dimensions.
+func (g *Game) Layout(w, h int) (int, int) {
+	gd := NewGameData()
+	return gd.TileWidth * gd.ScreenWidth, gd.TileHeight * gd.ScreenHeight
+
+}
+
+func main() {
+
+	g := NewGame()
+	ebiten.SetWindowResizable(true)
+
+	ebiten.SetWindowTitle("Tower")
 
 	g.Extras.app.Subscribe(window.OnKeyDown, g.onKey)
 
