@@ -22,7 +22,7 @@ func (p *Position) GetManhattanDistance(other *Position) int {
 }
 
 type Renderable struct {
-	node core.INode
+	Image core.INode
 }
 
 type Movable struct{}

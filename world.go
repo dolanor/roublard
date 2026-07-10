@@ -20,9 +20,9 @@ func InitializeWorld(startingLevel *Level, scene *core.Node) (*ecs.Manager, map[
 	movable := manager.NewComponent()
 	monster = manager.NewComponent()
 
-	elfMesh := loadElfMesh()
-	scene.Add(elfMesh)
-	elfMesh.SetVisible(true)
+	playerImg := loadElfMesh()
+	scene.Add(playerImg)
+	playerImg.SetVisible(true)
 
 	// Get First Room
 	startingRoom := startingLevel.Rooms[0]
@@ -32,21 +32,21 @@ func InitializeWorld(startingLevel *Level, scene *core.Node) (*ecs.Manager, map[
 	manager.NewEntity().
 		AddComponent(player, Player{}).
 		AddComponent(renderable, &Renderable{
-			node: elfMesh,
+			Image: playerImg,
 		}).
 		AddComponent(movable, Movable{}).
 		AddComponent(position, &Position{
 			X: x,
 			Y: y,
-			Z: elfMesh.Position().Z,
+			Z: playerImg.Position().Z,
 		})
 
 	//Add a Monster in each room except the player's room
 	for _, room := range startingLevel.Rooms {
 		if room.X1 != startingRoom.X1 {
-			monsterMesh := loadSkeletonMesh()
-			monsterMesh.SetVisible(false)
-			scene.Add(monsterMesh)
+			skellyImg := loadSkeletonMesh()
+			skellyImg.SetVisible(false)
+			scene.Add(skellyImg)
 
 			mX, mY := room.Center()
 			manager.NewEntity().
@@ -54,12 +54,12 @@ func InitializeWorld(startingLevel *Level, scene *core.Node) (*ecs.Manager, map[
 					Name: "Skeleton",
 				}).
 				AddComponent(renderable, &Renderable{
-					node: monsterMesh,
+					Image: skellyImg,
 				}).
 				AddComponent(position, &Position{
 					X: mX,
 					Y: mY,
-					Z: monsterMesh.Position().Z,
+					Z: skellyImg.Position().Z,
 				})
 
 		}

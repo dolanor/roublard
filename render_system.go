@@ -9,12 +9,12 @@ func ProcessRenderables(g *Game, level *Level /* TODO , ??? */) {
 		pos := result.Components[position].(*Position)
 		node := result.Components[renderable].(*Renderable)
 
-		node.node.GetNode().SetPosition(float32(pos.X), float32(pos.Z), float32(pos.Y))
+		node.Image.GetNode().SetPosition(float32(pos.X), float32(pos.Z), float32(pos.Y))
 		level.mu.Lock()
 		if level.PlayerVisible.IsVisible(pos.X, pos.Y) {
-			node.node.SetVisible(true)
+			node.Image.SetVisible(true)
 		} else {
-			node.node.SetVisible(false)
+			node.Image.SetVisible(false)
 		}
 		level.mu.Unlock()
 
