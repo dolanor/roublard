@@ -2,7 +2,7 @@ package main
 
 import "github.com/dolanor/roublard/ebiten"
 
-func TryMovePlayer(g *Game) {
+func TakePlayerAction(g *Game) {
 	players := g.WorldTags["players"]
 	turnTaken := false
 
@@ -44,6 +44,11 @@ func TryMovePlayer(g *Game) {
 			level.mu.Lock()
 			level.PlayerVisible.Compute(level, pos.X, pos.Y, 8)
 			level.mu.Unlock()
+		} else if x != 0 || y != 0 {
+			if level.Tiles[index].TileType != WALL {
+				monsterPosition := Position{X: pos.X + x, Y: pos.Y + y}
+				AttackSystem(g, pos, &monsterPosition)
+			}
 		}
 
 		updateMapVisibility(level)
