@@ -91,6 +91,10 @@ func (g *Game) processKeys(ev any) (x, y int) {
 			}
 
 		}
+	case window.KeySlash:
+		fs := g.Extras.app.FullScreen()
+		g.Extras.app.SetFullScreen(!fs)
+		return x, y
 	}
 
 	return x, y
