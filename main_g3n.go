@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"time"
 
+	"github.com/dolanor/roublard/ebiten"
 	"github.com/g3n/engine/app"
 	"github.com/g3n/engine/camera"
 	"github.com/g3n/engine/core"
@@ -32,6 +33,7 @@ func (g *Game) Update(renderer *renderer.Renderer, deltaTime time.Duration) {
 	g.Extras.app.Gls().Clear(gls.DEPTH_BUFFER_BIT | gls.STENCIL_BUFFER_BIT | gls.COLOR_BUFFER_BIT)
 
 	ProcessRenderables(g, g.Map.CurrentLevel, nil)
+	ProcessUserLog(g, new(ebiten.Image))
 
 	err := renderer.Render(g.Extras.scene, g.Extras.cam)
 	if err != nil {
