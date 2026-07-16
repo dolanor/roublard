@@ -10,7 +10,16 @@ import (
 )
 
 func loadElfMesh() core.INode {
-	return loadMesh("assets/elf-wizard.glb", 0, 0.01, 0.7+tileHeight)
+	mesh := loadMesh("assets/elf-wizard.glb", 0, 0.01, 0.7+tileHeight)
+	meshNode := mesh.GetNode()
+
+	// add torch light
+	pointLight := light.NewPoint(&math32.Color{1, .5, 0}, 30)
+	pointLight.SetPosition(1, 1, 2)
+
+	meshNode.Add(pointLight)
+
+	return mesh
 }
 
 func loadSkeletonMesh() core.INode {
@@ -42,12 +51,6 @@ func loadMesh(path string, meshIndex int, scaleFactor float32, zOffset float32) 
 	meshNode.SetPosition(1, 0.7, zOffset)
 	// TODO add to scene somehow
 	log.Info("scale", "file_path", path, "scale", mesh.Scale())
-
-	// add torch light
-	pointLight := light.NewPoint(&math32.Color{1, .5, 0}, 30)
-	pointLight.SetPosition(1, 1, 2)
-
-	meshNode.Add(pointLight)
 
 	return mesh
 }
