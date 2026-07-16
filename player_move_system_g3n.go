@@ -15,7 +15,7 @@ func updateMapVisibility(level *Level) {
 	_, _ = solidMat, wireframeMat
 	// We decide to check for every tile in the level if it should be rendered or not
 	for x := 0; x < gd.ScreenWidth; x++ {
-		for y := 0; y < gd.ScreenHeight; y++ {
+		for y := 0; y < levelHeight; y++ {
 			index := level.GetIndexFromXY(x, y)
 			tile := level.Tiles[index]
 
