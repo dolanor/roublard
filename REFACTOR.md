@@ -16,3 +16,10 @@ Health.MaxHealth -> Max
 -var a *ecs.QueryResult = nil
 +var a *ecs.QueryResult
 ```
+
+# level.go
+
+doesn't do anything in our game engine
+```diff
+-levelHeight = gd.ScreenHeight - gd.UIHeight
+```
