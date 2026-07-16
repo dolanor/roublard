@@ -15,6 +15,8 @@ type TileType int
 var floor *graphic.Mesh
 var wall *graphic.Mesh
 
+var levelHeight int = 0
+
 const (
 	WALL TileType = iota
 	FLOOR
@@ -100,6 +102,7 @@ func (level *Level) GenerateLevelTiles() {
 	MAX_ROOMS := 30
 
 	gd := NewGameData()
+	levelHeight = gd.ScreenHeight - gd.UIHeight
 	tiles := level.createTiles()
 	level.Tiles = tiles
 	contains_rooms := false

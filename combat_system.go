@@ -46,30 +46,33 @@ func AttackSystem(g *Game, attackerPosition *Position, defenderPosition *Positio
 	defenderName := defender.Components[name].(*Name)
 	attackerWeapon := attacker.Components[meleeWeapon].(*MeleeWeapon)
 	attackerName := attacker.Components[name].(*Name)
+	defenderMessage := defender.Components[userMessage].(*UserMessage)
+	attackerMessage := defender.Components[userMessage].(*UserMessage)
 
 	toHitRoll := GetDiceRoll(10)
 
 	if toHitRoll+attackerWeapon.ToHitBonus > defenderArmor.ArmorClass {
+		// It's a hit!
 		damageRoll := GetRandomBetween(attackerWeapon.MinimumDamage, attackerWeapon.MaximumDamage)
 		damageDone := damageRoll - defenderArmor.Defense
 
+		// Let's not have the weapon heal the defender
 		if damageDone < 0 {
 			damageDone = 0
 		}
 
 		defenderHealth.CurrentHealth -= damageDone
-		fmt.Printf("%s swings %s at %s and hits for %d health.\n", attackerName, attackerWeapon.Name, defenderName, damageDone)
+		attackerMessage.AttackMessage = fmt.Sprintf("%s swings %s at %s and hits for %d health.\n", attackerName, attackerWeapon.Name, defenderName, damageDone)
 
 		if defenderHealth.CurrentHealth <= 0 {
-			fmt.Printf("%s has died!\n", defenderName)
+			defenderMessage.DeadMessage = fmt.Sprintf("%s has died!\n", defenderName)
 			if defenderName.Label == "Player" {
-				fmt.Printf("Game Over!\n")
+				defenderMessage.GameStateMessage = fmt.Sprintf("Game Over!\n")
 				g.Turn = GameOver
 			}
-			g.World.DisposeEntity(defender.Entity)
-
 		}
+
 	} else {
-		fmt.Printf("%s swings %s at %s and misses.\n", attackerName, attackerWeapon.Name, defenderName)
+		attackerMessage.AttackMessage = fmt.Sprintf("%s swings %s at %s and misses.\n", attackerName, attackerWeapon.Name, defenderName)
 	}
 }
