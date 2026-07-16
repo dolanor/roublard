@@ -6,7 +6,6 @@ import (
 	"github.com/bytearena/ecs"
 )
 
-// Get the attacker and defender if either is a player
 func AttackSystem(g *Game, attackerPosition *Position, defenderPosition *Position) {
 	var attacker *ecs.QueryResult = nil
 	var defender *ecs.QueryResult = nil
@@ -14,6 +13,7 @@ func AttackSystem(g *Game, attackerPosition *Position, defenderPosition *Positio
 	//Get the attacker and defender if either is a player
 	for _, playerCombatant := range g.World.Query(g.WorldTags["players"]) {
 		pos := playerCombatant.Components[position].(*Position)
+
 		if pos.IsEqual(attackerPosition) {
 			//This is the attacker
 			attacker = playerCombatant
@@ -26,6 +26,7 @@ func AttackSystem(g *Game, attackerPosition *Position, defenderPosition *Positio
 	//Get the attacker and defender if either is a monster
 	for _, cbt := range g.World.Query(g.WorldTags["monsters"]) {
 		pos := cbt.Components[position].(*Position)
+
 		if pos.IsEqual(attackerPosition) {
 			//This is the attacker
 			attacker = cbt
@@ -33,41 +34,41 @@ func AttackSystem(g *Game, attackerPosition *Position, defenderPosition *Positio
 			//This is the defender
 			defender = cbt
 		}
-	}
 
+	}
 	//If we somehow don't have an attacker or defender, just leave
 	if attacker == nil || defender == nil {
 		return
 	}
-
 	//Grab the required information
 	defenderArmor := defender.Components[armor].(*Armor)
 	defenderHealth := defender.Components[health].(*Health)
-	defenderName := defender.Components[name].(*Name)
-	attackerWeapon := attacker.Components[meleeWeapon].(*MeleeWeapon)
-	attackerName := attacker.Components[name].(*Name)
+	defenderName := defender.Components[name].(*Name).Label
 	defenderMessage := defender.Components[userMessage].(*UserMessage)
-	attackerMessage := defender.Components[userMessage].(*UserMessage)
 
+	attackerWeapon := attacker.Components[meleeWeapon].(*MeleeWeapon)
+	attackerName := attacker.Components[name].(*Name).Label
+	attackerMessage := attacker.Components[userMessage].(*UserMessage)
+
+	//Roll a d10 to hit
 	toHitRoll := GetDiceRoll(10)
 
 	if toHitRoll+attackerWeapon.ToHitBonus > defenderArmor.ArmorClass {
 		// It's a hit!
 		damageRoll := GetRandomBetween(attackerWeapon.MinimumDamage, attackerWeapon.MaximumDamage)
-		damageDone := damageRoll - defenderArmor.Defense
 
+		damageDone := damageRoll - defenderArmor.Defense
 		// Let's not have the weapon heal the defender
 		if damageDone < 0 {
 			damageDone = 0
 		}
-
 		defenderHealth.CurrentHealth -= damageDone
 		attackerMessage.AttackMessage = fmt.Sprintf("%s swings %s at %s and hits for %d health.\n", attackerName, attackerWeapon.Name, defenderName, damageDone)
 
 		if defenderHealth.CurrentHealth <= 0 {
 			defenderMessage.DeadMessage = fmt.Sprintf("%s has died!\n", defenderName)
-			if defenderName.Label == "Player" {
-				defenderMessage.GameStateMessage = fmt.Sprintf("Game Over!\n")
+			if defenderName == "Player" {
+				defenderMessage.GameStateMessage = "Game Over!\n"
 				g.Turn = GameOver
 			}
 		}

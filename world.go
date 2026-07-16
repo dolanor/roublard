@@ -18,7 +18,6 @@ func InitializeWorld(startingLevel *Level, scene *core.Node) (*ecs.Manager, map[
 	tags := make(map[string]ecs.Tag)
 	manager := ecs.NewManager()
 
-	// WARNING: this is global state
 	player := manager.NewComponent()
 	position = manager.NewComponent()
 	renderable = manager.NewComponent()
@@ -38,7 +37,6 @@ func InitializeWorld(startingLevel *Level, scene *core.Node) (*ecs.Manager, map[
 	startingRoom := startingLevel.Rooms[0]
 	x, y := startingRoom.Center()
 
-	// Define the elf wizard in the ECS
 	manager.NewEntity().
 		AddComponent(player, Player{}).
 		AddComponent(renderable, &Renderable{

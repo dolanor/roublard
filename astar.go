@@ -73,7 +73,6 @@ func (as AStar) GetPath(level Level, start *Position, end *Position) []Position 
 	startNode.f = 0
 
 	// Create this node just for ease of dropping into our isEqual function to see if we are at the end
-	// May be worth a refactor of changing the isEqual to test on Position.
 	endNodePlaceholder := newNode(nil, end)
 
 	openList = append(openList, startNode)

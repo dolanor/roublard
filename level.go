@@ -44,6 +44,19 @@ type MapTile struct {
 // NewLevel creates a new game level in a dungeon.
 func NewLevel() Level {
 	l := Level{}
+	loadTileImages()
+
+	rooms := make([]Rect, 0)
+	l.Rooms = rooms
+	l.GenerateLevelTiles()
+	l.PlayerVisible = fov.New()
+	return l
+}
+
+func loadTileImages() {
+	if floor != nil && wall != nil {
+		return
+	}
 	var err error
 
 	floor, _, err = ebitenutil.NewImageFromFile("assets/floor.png")
@@ -55,18 +68,11 @@ func NewLevel() Level {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	rooms := make([]Rect, 0)
-	l.Rooms = rooms
-	l.GenerateLevelTiles()
-	l.PlayerVisible = fov.New()
-	return l
 }
 
 // DrawLevel draws the level onto the screen.
 func (level *Level) DrawLevel(screen *ebiten.Image) {
 	gd := NewGameData()
-
 	for x := 0; x < gd.ScreenWidth; x++ {
 		for y := 0; y < gd.ScreenHeight; y++ {
 			idx := level.GetIndexFromXY(x, y)
@@ -218,7 +224,6 @@ func (level Level) InBounds(x, y int) bool {
 	return true
 }
 
-// TODO: Change this to check for WALL, not blocked
 func (level Level) IsOpaque(x, y int) bool {
 	idx := level.GetIndexFromXY(x, y)
 	return level.Tiles[idx].TileType == WALL
