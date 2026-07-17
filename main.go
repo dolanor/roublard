@@ -43,6 +43,8 @@ func (g *Game) UpdateLogic() error {
 		UpdateMonster(g)
 	}
 
+	ProcessUserLogG3N(g)
+
 	return nil
 
 }
@@ -72,5 +74,6 @@ func main() {
 
 	g.Extras.app.Subscribe(window.OnKeyDown, g.onKey)
 
+	g.CreateLogWindow()
 	g.Extras.app.Run(g.Update)
 }
