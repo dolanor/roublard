@@ -73,42 +73,84 @@ func InitializeWorld(startingLevel *Level, scene *core.Node) (*ecs.Manager, map[
 	//Add a Monster in each room except the player's room
 	for _, room := range startingLevel.Rooms {
 		if room.X1 != startingRoom.X1 {
-			skellyImg := loadSkeletonMesh()
-			skellyImg.SetVisible(false)
-			scene.Add(skellyImg)
-
 			mX, mY := room.Center()
-			manager.NewEntity().
-				AddComponent(monster, &Monster{}).
-				AddComponent(renderable, &Renderable{
-					Image: skellyImg,
-				}).
-				AddComponent(position, &Position{
-					X: mX,
-					Y: mY,
-					Z: skellyImg.Position().Z,
-				}).
-				AddComponent(health, &Health{
-					MaxHealth:     10,
-					CurrentHealth: 10,
-				}).
-				AddComponent(meleeWeapon, &MeleeWeapon{
-					Name:          "Short Sword",
-					MinimumDamage: 2,
-					MaximumDamage: 6,
-					ToHitBonus:    0,
-				}).
-				AddComponent(armor, &Armor{
-					Name:       "Bone",
-					Defense:    3,
-					ArmorClass: 4,
-				}).
-				AddComponent(name, &Name{Label: "Skeleton"}).
-				AddComponent(userMessage, &UserMessage{
-					AttackMessage:    "",
-					DeadMessage:      "",
-					GameStateMessage: "",
-				})
+
+			//Flip a coin to see what to add...
+			mobSpawn := GetDiceRoll(2)
+
+			if mobSpawn == 1 {
+				orcImg := loadGoblinJanitorMesh()
+				orcImg.SetVisible(false)
+				scene.Add(orcImg)
+
+				manager.NewEntity().
+					AddComponent(monster, &Monster{}).
+					AddComponent(renderable, &Renderable{
+						Image: orcImg,
+					}).
+					AddComponent(position, &Position{
+						X: mX,
+						Y: mY,
+						Z: orcImg.Position().Z,
+					}).
+					AddComponent(health, &Health{
+						MaxHealth:     30,
+						CurrentHealth: 30,
+					}).
+					AddComponent(meleeWeapon, &MeleeWeapon{
+						Name:          "Machete",
+						MinimumDamage: 4,
+						MaximumDamage: 8,
+						ToHitBonus:    1,
+					}).
+					AddComponent(armor, &Armor{
+						Name:       "Leather",
+						Defense:    5,
+						ArmorClass: 6,
+					}).
+					AddComponent(name, &Name{Label: "Orc"}).
+					AddComponent(userMessage, &UserMessage{
+						AttackMessage:    "",
+						DeadMessage:      "",
+						GameStateMessage: "",
+					})
+			} else {
+				skellyImg := loadSkeletonMesh()
+				skellyImg.SetVisible(false)
+				scene.Add(skellyImg)
+
+				manager.NewEntity().
+					AddComponent(monster, &Monster{}).
+					AddComponent(renderable, &Renderable{
+						Image: skellyImg,
+					}).
+					AddComponent(position, &Position{
+						X: mX,
+						Y: mY,
+						Z: skellyImg.Position().Z,
+					}).
+					AddComponent(health, &Health{
+						MaxHealth:     10,
+						CurrentHealth: 10,
+					}).
+					AddComponent(meleeWeapon, &MeleeWeapon{
+						Name:          "Short Sword",
+						MinimumDamage: 2,
+						MaximumDamage: 6,
+						ToHitBonus:    0,
+					}).
+					AddComponent(armor, &Armor{
+						Name:       "Bone",
+						Defense:    3,
+						ArmorClass: 4,
+					}).
+					AddComponent(name, &Name{Label: "Skeleton"}).
+					AddComponent(userMessage, &UserMessage{
+						AttackMessage:    "",
+						DeadMessage:      "",
+						GameStateMessage: "",
+					})
+			}
 
 		}
 	}
