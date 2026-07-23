@@ -27,7 +27,7 @@ func loadSkeletonMesh() core.INode {
 }
 
 func loadGoblinJanitorMesh() core.INode {
-	return loadMesh("assets/goblin-janitor.glb", 1, 0.03, -0.8)
+	return loadMesh("assets/goblin-janitor.glb", 1, 0.03, 0)
 }
 
 func loadMesh(path string, meshIndex int, scaleFactor float32, zOffset float32) core.INode {
