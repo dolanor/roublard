@@ -75,6 +75,8 @@ func main() {
 
 	g.Extras.app.Subscribe(window.OnKeyDown, g.onKey)
 
-	g.CreateLogWindow()
+	width, height := g.Extras.app.GetSize()
+	panel := CreatePanel(g.Extras.scene, width, height)
+	CreateLogWindow(panel, width/2, height/4)
 	g.Extras.app.Run(g.Update)
 }

@@ -3,17 +3,15 @@ package main
 import (
 	"fmt"
 
+	"github.com/g3n/engine/core"
 	"github.com/g3n/engine/gui"
 	"github.com/g3n/engine/math32"
 )
 
 var logList *gui.List
 
-func (g *Game) CreateLogWindow() {
+func CreatePanel(scene *core.Node, width, height int) *gui.Panel {
 	dl := gui.NewDockLayout()
-
-	width, height := g.Extras.app.GetSize()
-
 	panel := gui.NewPanel(float32(width), float32(height))
 	panel.SetColor4(&gui.StyleDefault().Scroller.BgColor)
 	panel.SetLayout(dl)
@@ -21,17 +19,21 @@ func (g *Game) CreateLogWindow() {
 	panel.SetRenderable(false)
 	panel.SetEnabled(false)
 
-	w1 := gui.NewWindow(float32(width)/2, float32(height)/4)
-	w1.SetPosition(10, float32(height)*3/4)
+	scene.Add(panel)
+	gui.Manager().Set(panel)
+
+	return panel
+}
+
+func CreateLogWindow(panel *gui.Panel, width, height int) {
+	w1 := gui.NewWindow(float32(width), float32(height))
+	w1.SetPosition(0, 3*float32(height))
 	w1.SetResizable(true)
 
 	logList = gui.NewVList(w1.Width(), w1.Height())
 
 	w1.Add(logList)
 	panel.Add(w1)
-
-	g.Extras.scene.Add(panel)
-	gui.Manager().Set(panel)
 }
 
 func ProcessUserLogG3N(g *Game) {
