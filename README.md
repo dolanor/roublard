@@ -2,6 +2,8 @@
 
 [roublard.low.webm](https://github.com/user-attachments/assets/6a3987a4-523d-4038-a618-0758c64e9afe)
 
+[Better quality video](https://youtu.be/C0HtNDdppLU)
+
 > Roublard is the french name of the Rogue class in DnD
 
 Rogue-like game based on the [tutorial series from IdiotCoder/FatOldYeti](https://web.archive.org/web/20220818041908/https://www.fatoldyeti.com/posts/roguelike-tutorial-0/).
