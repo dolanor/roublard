@@ -1,6 +1,9 @@
 # Refactor
 
 the refactor to do once I'm in sync with the original upstream project
+
+# rename tags from the upstream repo (upstream-v0.0.16 ?)
+
 # components
 
 Health.CurrentHealth -> Current
