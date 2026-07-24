@@ -44,6 +44,7 @@ func (g *Game) UpdateLogic() error {
 	}
 
 	ProcessUserLogG3N(g)
+	ProcessHUDG3N(g)
 
 	return nil
 
@@ -78,5 +79,6 @@ func main() {
 	width, height := g.Extras.app.GetSize()
 	panel := CreatePanel(g.Extras.scene, width, height)
 	CreateLogWindow(panel, width/2, height/4)
+	CreateHUDWindow(panel, width/2, height/4)
 	g.Extras.app.Run(g.Update)
 }
