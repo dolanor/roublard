@@ -149,6 +149,7 @@ func (level *Level) GenerateLevelTiles() {
 			contains_rooms = true
 		}
 	}
+	debugPrintTiles(tiles, gd)
 
 }
 
@@ -201,7 +202,6 @@ func (level *Level) createTiles() []*MapTile {
 
 		}
 	}
-	debugPrintTiles(tiles, gd)
 	return tiles
 }
 
