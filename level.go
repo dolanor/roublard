@@ -4,7 +4,6 @@ import (
 	"log"
 	"sync"
 
-	"github.com/dolanor/roublard/ebiten"
 	"github.com/dolanor/roublard/ebitenutil"
 	"github.com/g3n/engine/graphic"
 	"github.com/norendren/go-fov/fov"
@@ -68,30 +67,6 @@ func loadTileImages() {
 	if err != nil {
 		log.Fatal(err)
 	}
-}
-
-// DrawLevel draws the level onto the screen.
-func (level *Level) DrawLevel(screen *ebiten.Image) {
-	gd := NewGameData()
-	for x := 0; x < gd.ScreenWidth; x++ {
-		for y := 0; y < levelHeight; y++ {
-			idx := level.GetIndexFromXY(x, y)
-			tile := level.Tiles[idx]
-			isVis := level.PlayerVisible.IsVisible(x, y)
-			if isVis {
-				op := &ebiten.DrawImageOptions{}
-				op.GeoM.Translate(float64(tile.PixelX), float64(tile.PixelY))
-				screen.DrawImage(tile.Image, op)
-				level.Tiles[idx].IsRevealed = true
-			} else if tile.IsRevealed {
-				op := &ebiten.DrawImageOptions{}
-				op.GeoM.Translate(float64(tile.PixelX), float64(tile.PixelY))
-				op.ColorM.Translate(100, 100, 100, 0.35)
-				screen.DrawImage(tile.Image, op)
-			}
-		}
-	}
-
 }
 
 // GetIndexFromXY gets the index of the map array from a given X,Y TILE coordinate.

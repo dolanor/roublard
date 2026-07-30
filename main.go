@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/bytearena/ecs"
-	"github.com/dolanor/roublard/ebiten"
 	"github.com/g3n/engine/window"
 )
 
@@ -50,29 +49,9 @@ func (g *Game) UpdateLogic() error {
 
 }
 
-// Draw is called each draw cycle and is where we will blit.
-func (g *Game) Draw(screen *ebiten.Image) {
-	//Draw the Map
-	level := g.Map.CurrentLevel
-	level.DrawLevel(screen)
-	ProcessRenderables(g, level, screen)
-	ProcessUserLog(g, screen)
-	ProcessHUD(g, screen)
-}
-
-// Layout will return the screen dimensions.
-func (g *Game) Layout(w, h int) (int, int) {
-	gd := NewGameData()
-	return gd.TileWidth * gd.ScreenWidth, gd.TileHeight * gd.ScreenHeight
-
-}
-
 func main() {
 
 	g := NewGame()
-	ebiten.SetWindowResizable(true)
-
-	ebiten.SetWindowTitle("Tower")
 
 	g.Extras.app.Subscribe(window.OnKeyDown, g.onKey)
 

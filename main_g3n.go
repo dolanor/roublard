@@ -31,7 +31,7 @@ func (g *Game) Update(renderer *renderer.Renderer, deltaTime time.Duration) {
 	log := g.Extras.log.With("func", "update")
 	g.Extras.app.Gls().Clear(gls.DEPTH_BUFFER_BIT | gls.STENCIL_BUFFER_BIT | gls.COLOR_BUFFER_BIT)
 
-	ProcessRenderables(g, g.Map.CurrentLevel, nil)
+	ProcessRenderables(g, g.Map.CurrentLevel)
 
 	err := renderer.Render(g.Extras.scene, g.Extras.cam)
 	if err != nil {

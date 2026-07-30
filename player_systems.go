@@ -1,32 +1,11 @@
 package main
 
-import "github.com/dolanor/roublard/ebiten"
-
 func TakePlayerAction(g *Game) {
 	players := g.WorldTags["players"]
 	turnTaken := false
 
 	x := g.Extras.currentX
 	y := g.Extras.currentY
-
-	if ebiten.IsKeyPressed(ebiten.KeyUp) {
-		y = -1
-	}
-
-	if ebiten.IsKeyPressed(ebiten.KeyDown) {
-		y = 1
-	}
-
-	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
-		x = -1
-	}
-
-	if ebiten.IsKeyPressed(ebiten.KeyRight) {
-		x = 1
-	}
-	if ebiten.IsKeyPressed(ebiten.KeyQ) {
-		turnTaken = true
-	}
 
 	level := g.Map.CurrentLevel
 

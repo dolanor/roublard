@@ -1,12 +1,6 @@
 package main
 
-import (
-	_ "math" // useless, just to make the diff more palatable with rrogue
-
-	"github.com/dolanor/roublard/ebiten"
-)
-
-func ProcessRenderables(g *Game, level *Level, _ *ebiten.Image) {
+func ProcessRenderables(g *Game, level *Level) {
 	for _, result := range g.World.Query(g.WorldTags["renderables"]) {
 		pos := result.Components[position].(*Position)
 		node := result.Components[renderable].(*Renderable)
