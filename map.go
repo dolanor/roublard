@@ -13,7 +13,7 @@ func NewGameMap(scene *core.Node) *GameMap {
 	//Return a new game map of a single level for now
 	l := NewLevel()
 	levels := make([]*Level, 0)
-	levels = append(levels, &l)
+	levels = append(levels, l)
 	d := Dungeon{Name: "default", Levels: levels}
 	dungeons := make([]Dungeon, 0)
 
@@ -22,7 +22,7 @@ func NewGameMap(scene *core.Node) *GameMap {
 	}
 
 	dungeons = append(dungeons, d)
-	gm := &GameMap{Dungeons: dungeons, CurrentLevel: &l}
+	gm := &GameMap{Dungeons: dungeons, CurrentLevel: l}
 	return gm
 
 }

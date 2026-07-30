@@ -33,7 +33,7 @@ func UpdateMonster(game *Game) {
 				}
 			} else {
 				astar := AStar{}
-				path := astar.GetPath(*l, pos, &playerPosition)
+				path := astar.GetPath(l, pos, &playerPosition)
 				if len(path) > 1 {
 					nextTile := l.Tiles[l.GetIndexFromXY(path[1].X, path[1].Y)]
 					if !nextTile.Blocked {

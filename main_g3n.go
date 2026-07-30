@@ -54,7 +54,7 @@ type GameExtras struct {
 
 func NewG3NExtras() *GameExtras {
 	a := app.App(1280, 800, "Roublard")
-	a.IWindow.SetFullScreen(true)
+	a.SetFullScreen(true)
 
 	scene := core.NewNode()
 

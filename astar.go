@@ -60,7 +60,7 @@ type AStar struct{}
 
 // GetPath takes a level, the starting position and an ending position (the goal) and returns
 // a list of Positions which is the path between the points.
-func (as AStar) GetPath(level Level, start *Position, end *Position) []Position {
+func (as AStar) GetPath(level *Level, start *Position, end *Position) []Position {
 	gd := NewGameData()
 
 	openList := make([]*node, 0)
@@ -77,10 +77,7 @@ func (as AStar) GetPath(level Level, start *Position, end *Position) []Position 
 
 	openList = append(openList, startNode)
 
-	for {
-		if len(openList) == 0 {
-			break
-		}
+	for len(openList) != 0 {
 		//Get the current node
 		currentNode := openList[0]
 		currentIndex := 0
@@ -102,10 +99,7 @@ func (as AStar) GetPath(level Level, start *Position, end *Position) []Position 
 		if currentNode.isEqual(endNodePlaceholder) {
 			path := make([]Position, 0)
 			current := currentNode
-			for {
-				if current == nil {
-					break
-				}
+			for current != nil {
 				path = append(path, *current.Position)
 				current = current.Parent
 			}

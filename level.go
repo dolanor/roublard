@@ -42,7 +42,7 @@ type MapTile struct {
 }
 
 // NewLevel creates a new game level in a dungeon.
-func NewLevel() Level {
+func NewLevel() *Level {
 	l := Level{}
 	loadTileImages()
 
@@ -50,7 +50,7 @@ func NewLevel() Level {
 	l.Rooms = rooms
 	l.GenerateLevelTiles()
 	l.PlayerVisible = fov.New()
-	return l
+	return &l
 }
 
 func loadTileImages() {
@@ -83,7 +83,7 @@ func (level *Level) DrawLevel(screen *ebiten.Image) {
 				op.GeoM.Translate(float64(tile.PixelX), float64(tile.PixelY))
 				screen.DrawImage(tile.Image, op)
 				level.Tiles[idx].IsRevealed = true
-			} else if tile.IsRevealed == true {
+			} else if tile.IsRevealed {
 				op := &ebiten.DrawImageOptions{}
 				op.GeoM.Translate(float64(tile.PixelX), float64(tile.PixelY))
 				op.ColorM.Translate(100, 100, 100, 0.35)
@@ -216,7 +216,7 @@ func (level *Level) createRoom(room Rect) {
 		}
 	}
 }
-func (level Level) InBounds(x, y int) bool {
+func (*Level) InBounds(x, y int) bool {
 	gd := NewGameData()
 	if x < 0 || x > gd.ScreenWidth || y < 0 || y > levelHeight {
 		return false
@@ -224,7 +224,7 @@ func (level Level) InBounds(x, y int) bool {
 	return true
 }
 
-func (level Level) IsOpaque(x, y int) bool {
+func (level *Level) IsOpaque(x, y int) bool {
 	idx := level.GetIndexFromXY(x, y)
 	return level.Tiles[idx].TileType == WALL
 }

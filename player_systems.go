@@ -35,7 +35,7 @@ func TakePlayerAction(g *Game) {
 		index := level.GetIndexFromXY(pos.X+x, pos.Y+y)
 
 		tile := level.Tiles[index]
-		if tile.Blocked != true {
+		if !tile.Blocked {
 			level.Tiles[level.GetIndexFromXY(pos.X, pos.Y)].Blocked = false
 			pos.X += x
 			pos.Y += y

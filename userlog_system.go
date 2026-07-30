@@ -59,7 +59,7 @@ func ProcessUserLog(g *Game, screen *ebiten.Image) {
 		if messages.AttackMessage != "" {
 			tmpMessages = append(tmpMessages, messages.AttackMessage)
 			anyMessages = true
-			fmt.Printf(messages.AttackMessage)
+			fmt.Print(messages.AttackMessage)
 			messages.AttackMessage = ""
 		}
 	}
@@ -68,14 +68,14 @@ func ProcessUserLog(g *Game, screen *ebiten.Image) {
 		if messages.DeadMessage != "" {
 			tmpMessages = append(tmpMessages, messages.DeadMessage)
 			anyMessages = true
-			fmt.Printf(messages.DeadMessage)
+			fmt.Print(messages.DeadMessage)
 			messages.DeadMessage = ""
 			g.World.DisposeEntity(m.Entity)
 		}
 		if messages.GameStateMessage != "" {
 			tmpMessages = append(tmpMessages, messages.GameStateMessage)
 			anyMessages = true
-			fmt.Printf(messages.GameStateMessage)
+			fmt.Print(messages.GameStateMessage)
 			//No need to clear, it's all over
 		}
 
