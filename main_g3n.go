@@ -9,17 +9,16 @@ import (
 	"github.com/g3n/engine/core"
 	"github.com/g3n/engine/gls"
 	"github.com/g3n/engine/gui"
-	"github.com/g3n/engine/light"
 	"github.com/g3n/engine/math32"
 	"github.com/g3n/engine/renderer"
 	"github.com/g3n/engine/window"
 )
 
-func (g *Game) UpdateLogicLoop() {
+func (g3nApp *G3NApp) UpdateLogicLoop() {
 	for range time.Tick(time.Second / 120) {
-		err := g.UpdateLogic()
+		err := g3nApp.UpdateLogic()
 		if err != nil {
-			g.Extras.log.Error("update logic", "error", err)
+			g3nApp.log.Error("update logic", "error", err)
 		}
 	}
 }
@@ -27,22 +26,20 @@ func (g *Game) UpdateLogicLoop() {
 // Update is the rendering update callback for g3n.
 // It is different from the Update() callback for ebiten which is more the logic update callback.
 // our logic callback is [Game.logicUpdateLoop].
-func (g *Game) Update(renderer *renderer.Renderer, deltaTime time.Duration) {
-	log := g.Extras.log.With("func", "update")
-	g.Extras.app.Gls().Clear(gls.DEPTH_BUFFER_BIT | gls.STENCIL_BUFFER_BIT | gls.COLOR_BUFFER_BIT)
+func (g3nApp *G3NApp) Update(renderer *renderer.Renderer, deltaTime time.Duration) {
+	log := g3nApp.log.With("func", "update")
+	g3nApp.app.Gls().Clear(gls.DEPTH_BUFFER_BIT | gls.STENCIL_BUFFER_BIT | gls.COLOR_BUFFER_BIT)
 
-	ProcessRenderables(g, g.Map.CurrentLevel)
+	ProcessRenderables(g3nApp.game, g3nApp.game.Map.CurrentLevel)
 
-	err := renderer.Render(g.Extras.scene, g.Extras.cam)
+	err := renderer.Render(g3nApp.scene, g3nApp.cam)
 	if err != nil {
 		log.Error("render", "error", err)
 	}
 }
 
-type GameExtras struct {
-	// FIXME: maybe protect it with a mutex
-	currentX int
-	currentY int
+type G3NApp struct {
+	game *Game
 
 	app         *app.Application
 	scene       *core.Node
@@ -52,7 +49,7 @@ type GameExtras struct {
 	log *slog.Logger
 }
 
-func NewG3NExtras() *GameExtras {
+func NewG3NApp(log *slog.Logger, game *Game, meshes []core.INode) *G3NApp {
 	a := app.App(1280, 800, "Roublard")
 	a.SetFullScreen(true)
 
@@ -75,23 +72,56 @@ func NewG3NExtras() *GameExtras {
 	}
 
 	a.Subscribe(window.OnWindowSize, onResize)
+	// force the resize
 	onResize("", nil)
-
-	// add a point light
-	pointLight := light.NewPoint(&math32.Color{1, 1, 1}, 30)
-	pointLight.SetPosition(1, 1, 2)
 
 	gui.Manager().Set(scene)
 
-	// add everything to the scene
-	//scene.Add(light.NewAmbient(&math32.Color{1, 1, 1}, .8))
-	scene.Add(pointLight)
 	scene.Add(cam)
 
-	return &GameExtras{
+	// Add the level meshes
+	for _, t := range game.Map.CurrentLevel.Tiles {
+		scene.Add(t.Mesh)
+	}
+
+	// Add the characters meshes
+	for _, mesh := range meshes {
+		scene.Add(mesh)
+	}
+
+	return &G3NApp{
+		game: game,
+
 		app:   a,
 		scene: scene,
 		cam:   cam,
-		log:   slog.Default(),
+		log:   log,
 	}
+}
+
+func (g3nApp *G3NApp) SetupKeyboardEventHandlers() {
+	g3nApp.app.Subscribe(window.OnKeyDown, g3nApp.onKey)
+}
+
+func (g3nApp *G3NApp) GetSize() (width, height int) {
+	return g3nApp.app.GetSize()
+}
+
+func (g3nApp *G3NApp) SetupUI() {
+	// we need to sleep a little bit otherwise the app.GetSize() will be wrong
+	time.Sleep(100 * time.Millisecond)
+
+	width, height := g3nApp.GetSize()
+	slog.Info("size", "w", width, "h", height)
+	panel := CreatePanel(g3nApp.scene, width, height)
+
+	//CreateLogWindow(panel, width, height)
+	//CreateHUDWindow(panel, width, height)
+	CreateLogWindow(panel, width/2, height/4)
+	CreateHUDWindow(panel, width/2, height/4)
+}
+
+func (g3nApp *G3NApp) Run() {
+	go g3nApp.UpdateLogicLoop()
+	g3nApp.app.Run(g3nApp.Update)
 }

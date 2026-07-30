@@ -34,7 +34,7 @@ type MapTile struct {
 	PixelX     int
 	PixelY     int
 	Blocked    bool
-	Image      *graphic.Mesh
+	Mesh       *graphic.Mesh
 	IsRevealed bool
 	IsWall     bool
 	TileType   TileType
@@ -136,7 +136,7 @@ func (level *Level) createHorizontalTunnel(x1 int, x2 int, y int) {
 			level.Tiles[index].Blocked = false
 			level.Tiles[index].IsWall = false
 			level.Tiles[index].TileType = TileTypeFloor
-			level.Tiles[index].Image = CloneAndPosition(floor, x, y)
+			level.Tiles[index].Mesh = CloneAndPosition(floor, x, y)
 
 		}
 	}
@@ -150,7 +150,7 @@ func (level *Level) createVerticalTunnel(y1 int, y2 int, x int) {
 			level.Tiles[index].Blocked = false
 			level.Tiles[index].IsWall = false
 			level.Tiles[index].TileType = TileTypeFloor
-			level.Tiles[index].Image = CloneAndPosition(floor, x, y)
+			level.Tiles[index].Mesh = CloneAndPosition(floor, x, y)
 
 		}
 	}
@@ -168,7 +168,7 @@ func (level *Level) createTiles() []*MapTile {
 				PixelX:     x * gd.TileWidth,
 				PixelY:     y * gd.TileHeight,
 				Blocked:    true,
-				Image:      CloneAndPosition(wall, x, y),
+				Mesh:       CloneAndPosition(wall, x, y),
 				IsRevealed: false,
 				TileType:   TileTypeWall,
 				IsWall:     true,
@@ -186,7 +186,7 @@ func (level *Level) createRoom(room Rect) {
 			index := level.GetIndexFromXY(x, y)
 			level.Tiles[index].Blocked = false
 			level.Tiles[index].TileType = TileTypeFloor
-			level.Tiles[index].Image = CloneAndPosition(floor, x, y)
+			level.Tiles[index].Mesh = CloneAndPosition(floor, x, y)
 			level.Tiles[index].IsWall = false
 		}
 	}

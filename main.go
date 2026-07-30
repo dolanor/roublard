@@ -1,8 +1,9 @@
 package main
 
 import (
+	"log/slog"
+
 	"github.com/bytearena/ecs"
-	"github.com/g3n/engine/window"
 )
 
 type Game struct {
@@ -11,53 +12,60 @@ type Game struct {
 	WorldTags   map[string]ecs.Tag
 	Turn        TurnState
 	TurnCounter int
-	Extras      *GameExtras
+
+	// FIXME: maybe protect it with a mutex
+	currentX int
+	currentY int
+
+	log *slog.Logger
 }
 
-// NewGame creates a new Game Object and initializes the data
-// This is a pretty solid refactor candidate for later
-func NewGame() *Game {
-	extras := NewG3NExtras()
-	g := &Game{}
-	g.Map = NewGameMap(extras.scene)
-	world, tags := InitializeWorld(g.Map.CurrentLevel, extras.scene)
+func NewGame(log *slog.Logger, gameMap *GameMap, world *ecs.Manager, tags map[string]ecs.Tag) *Game {
 
-	g.WorldTags = tags
-	g.World = world
-	g.Turn = PlayerTurn
-	g.TurnCounter = 0
-	g.Extras = extras
-	go g.UpdateLogicLoop()
+	g := &Game{
+		log:         log,
+		Map:         gameMap,
+		WorldTags:   tags,
+		World:       world,
+		Turn:        PlayerTurn,
+		TurnCounter: 0,
+	}
+
 	return g
 
 }
 
 // Update is called each tic.
-func (g *Game) UpdateLogic() error {
-	g.TurnCounter++
-	if g.Turn == PlayerTurn && g.TurnCounter > 20 {
-		TakePlayerAction(g)
+func (g3nApp *G3NApp) UpdateLogic() error {
+	g3nApp.game.TurnCounter++
+	if g3nApp.game.Turn == PlayerTurn && g3nApp.game.TurnCounter > 20 {
+		TakePlayerAction(g3nApp.game)
 	}
-	if g.Turn == MonsterTurn {
-		UpdateMonster(g)
+	if g3nApp.game.Turn == MonsterTurn {
+		UpdateMonster(g3nApp.game)
 	}
 
-	ProcessUserLogG3N(g)
-	ProcessHUDG3N(g)
+	ProcessUserLogG3N(g3nApp.game)
+	ProcessHUDG3N(g3nApp.game)
 
 	return nil
 
 }
 
 func main() {
+	log := slog.Default()
+	// TODO:
+	// maybe we should have the tile meshes separately like InitializeWorld
+	// or based on the game world, we generated/reference the meshes
+	gameMap := NewGameMap()
+	world, tags, meshes := InitializeWorld(gameMap.CurrentLevel)
 
-	g := NewGame()
+	game := NewGame(log.With("component", "game"), gameMap, world, tags)
 
-	g.Extras.app.Subscribe(window.OnKeyDown, g.onKey)
+	app := NewG3NApp(log.With("component", "g3n"), game, meshes)
 
-	width, height := g.Extras.app.GetSize()
-	panel := CreatePanel(g.Extras.scene, width, height)
-	CreateLogWindow(panel, width/2, height/4)
-	CreateHUDWindow(panel, width/2, height/4)
-	g.Extras.app.Run(g.Update)
+	app.SetupKeyboardEventHandlers()
+	app.SetupUI()
+
+	app.Run()
 }

@@ -4,8 +4,8 @@ func TakePlayerAction(g *Game) {
 	players := g.WorldTags["players"]
 	turnTaken := false
 
-	x := g.Extras.currentX
-	y := g.Extras.currentY
+	x := g.currentX
+	y := g.currentY
 
 	level := g.Map.CurrentLevel
 
@@ -36,7 +36,7 @@ func TakePlayerAction(g *Game) {
 	}
 
 	if x != 0 || y != 0 || turnTaken {
-		g.Extras.currentX, g.Extras.currentY = 0, 0
+		g.currentX, g.currentY = 0, 0
 		g.Turn = GetNextState(g.Turn)
 		g.TurnCounter = 0
 	}

@@ -26,19 +26,19 @@ func updateMapVisibility(level *Level) {
 			if isVisible {
 				tile.IsRevealed = true
 
-				tile.Image.SetVisible(true)
+				tile.Mesh.SetVisible(true)
 				if tile.IsWall {
-					tile.Image.SetMaterial(solidMat)
+					tile.Mesh.SetMaterial(solidMat)
 				}
 			} else {
 				if !tile.IsRevealed {
-					tile.Image.SetVisible(false)
+					tile.Mesh.SetVisible(false)
 					continue
 				}
 
 				if tile.IsWall {
-					tile.Image.SetMaterial(wireframeMat)
-					tile.Image.SetVisible(true)
+					tile.Mesh.SetMaterial(wireframeMat)
+					tile.Mesh.SetVisible(true)
 					continue
 				}
 			}
@@ -55,11 +55,11 @@ const (
 	MoveDown  Move = "move_down"
 )
 
-func (g *Game) onKey(evname string, ev any) {
-	g.Extras.currentX, g.Extras.currentY = g.processKeys(ev)
+func (g3nApp *G3NApp) onKey(evname string, ev any) {
+	g3nApp.game.currentX, g3nApp.game.currentY = g3nApp.processKeys(ev)
 }
 
-func (g *Game) processKeys(ev any) (x, y int) {
+func (g3nApp *G3NApp) processKeys(ev any) (x, y int) {
 
 	kev := ev.(*window.KeyEvent)
 	switch kev.Key {
@@ -74,7 +74,7 @@ func (g *Game) processKeys(ev any) (x, y int) {
 
 	case window.KeyM:
 		if kev.Mods == window.ModControl {
-			g.Extras.app.Exit()
+			g3nApp.app.Exit()
 			return x, y
 		}
 		// should deal with turn taken to be full iso compliant, but I don't think it matters that much and I
@@ -82,18 +82,18 @@ func (g *Game) processKeys(ev any) (x, y int) {
 
 	case window.KeyU:
 		if kev.Mods == window.ModControl {
-			if g.Extras.orthoToggle {
-				g.Extras.cam.SetProjection(camera.Orthographic)
-				g.Extras.orthoToggle = !g.Extras.orthoToggle
+			if g3nApp.orthoToggle {
+				g3nApp.cam.SetProjection(camera.Orthographic)
+				g3nApp.orthoToggle = !g3nApp.orthoToggle
 			} else {
-				g.Extras.cam.SetProjection(camera.Perspective)
-				g.Extras.orthoToggle = !g.Extras.orthoToggle
+				g3nApp.cam.SetProjection(camera.Perspective)
+				g3nApp.orthoToggle = !g3nApp.orthoToggle
 			}
 
 		}
 	case window.KeySlash:
-		fs := g.Extras.app.FullScreen()
-		g.Extras.app.SetFullScreen(!fs)
+		fs := g3nApp.app.FullScreen()
+		g3nApp.app.SetFullScreen(!fs)
 		return x, y
 	}
 

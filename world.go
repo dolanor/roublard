@@ -14,9 +14,10 @@ var armor *ecs.Component
 var name *ecs.Component
 var userMessage *ecs.Component
 
-func InitializeWorld(startingLevel *Level, scene *core.Node) (*ecs.Manager, map[string]ecs.Tag) {
+func InitializeWorld(startingLevel *Level) (*ecs.Manager, map[string]ecs.Tag, []core.INode) {
 	tags := make(map[string]ecs.Tag)
 	manager := ecs.NewManager()
+	meshes := []core.INode{}
 
 	player := manager.NewComponent()
 	position = manager.NewComponent()
@@ -30,7 +31,7 @@ func InitializeWorld(startingLevel *Level, scene *core.Node) (*ecs.Manager, map[
 	userMessage = manager.NewComponent()
 
 	playerMesh := loadElfMesh()
-	scene.Add(playerMesh)
+	meshes = append(meshes, playerMesh)
 	playerMesh.SetVisible(true)
 
 	// Get First Room
@@ -81,7 +82,7 @@ func InitializeWorld(startingLevel *Level, scene *core.Node) (*ecs.Manager, map[
 			if mobSpawn == 1 {
 				orcMesh := loadGoblinJanitorMesh()
 				orcMesh.SetVisible(false)
-				scene.Add(orcMesh)
+				meshes = append(meshes, orcMesh)
 
 				manager.NewEntity().
 					AddComponent(monster, &Monster{}).
@@ -117,7 +118,7 @@ func InitializeWorld(startingLevel *Level, scene *core.Node) (*ecs.Manager, map[
 			} else {
 				skeletonMesh := loadSkeletonMesh()
 				skeletonMesh.SetVisible(false)
-				scene.Add(skeletonMesh)
+				meshes = append(meshes, skeletonMesh)
 
 				manager.NewEntity().
 					AddComponent(monster, &Monster{}).
@@ -167,5 +168,5 @@ func InitializeWorld(startingLevel *Level, scene *core.Node) (*ecs.Manager, map[
 	messengers := ecs.BuildTag(userMessage)
 	tags["messengers"] = messengers
 
-	return manager, tags
+	return manager, tags, meshes
 }
