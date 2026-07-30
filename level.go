@@ -17,8 +17,8 @@ var wall *graphic.Mesh
 var levelHeight int = 0
 
 const (
-	WALL TileType = iota
-	FLOOR
+	TileTypeWall TileType = iota
+	TileTypeFloor
 )
 
 // Level holds the tile information for a complete dungeon level.
@@ -43,7 +43,7 @@ type MapTile struct {
 // NewLevel creates a new game level in a dungeon.
 func NewLevel() *Level {
 	l := Level{}
-	loadTileImages()
+	loadTileMeshes()
 
 	rooms := make([]Rect, 0)
 	l.Rooms = rooms
@@ -52,18 +52,18 @@ func NewLevel() *Level {
 	return &l
 }
 
-func loadTileImages() {
+func loadTileMeshes() {
 	if floor != nil && wall != nil {
 		return
 	}
-	var err error
 
-	floor, _, err = ebitenutil.NewImageFromFile("assets/floor.png")
+	var err error
+	floor, err = ebitenutil.NewMeshFromFile("assets/floor.png")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	wall, _, err = ebitenutil.NewImageFromFile("assets/wall.png")
+	wall, err = ebitenutil.NewMeshFromFile("assets/wall.png")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -135,7 +135,7 @@ func (level *Level) createHorizontalTunnel(x1 int, x2 int, y int) {
 		if index > 0 && index < gd.ScreenWidth*levelHeight {
 			level.Tiles[index].Blocked = false
 			level.Tiles[index].IsWall = false
-			level.Tiles[index].TileType = FLOOR
+			level.Tiles[index].TileType = TileTypeFloor
 			level.Tiles[index].Image = CloneAndPosition(floor, x, y)
 
 		}
@@ -149,7 +149,7 @@ func (level *Level) createVerticalTunnel(y1 int, y2 int, x int) {
 		if index > 0 && index < gd.ScreenWidth*levelHeight {
 			level.Tiles[index].Blocked = false
 			level.Tiles[index].IsWall = false
-			level.Tiles[index].TileType = FLOOR
+			level.Tiles[index].TileType = TileTypeFloor
 			level.Tiles[index].Image = CloneAndPosition(floor, x, y)
 
 		}
@@ -170,7 +170,7 @@ func (level *Level) createTiles() []*MapTile {
 				Blocked:    true,
 				Image:      CloneAndPosition(wall, x, y),
 				IsRevealed: false,
-				TileType:   WALL,
+				TileType:   TileTypeWall,
 				IsWall:     true,
 			}
 			tiles[index] = &tile
@@ -185,7 +185,7 @@ func (level *Level) createRoom(room Rect) {
 		for x := room.X1 + 1; x < room.X2; x++ {
 			index := level.GetIndexFromXY(x, y)
 			level.Tiles[index].Blocked = false
-			level.Tiles[index].TileType = FLOOR
+			level.Tiles[index].TileType = TileTypeFloor
 			level.Tiles[index].Image = CloneAndPosition(floor, x, y)
 			level.Tiles[index].IsWall = false
 		}
@@ -201,7 +201,7 @@ func (*Level) InBounds(x, y int) bool {
 
 func (level *Level) IsOpaque(x, y int) bool {
 	idx := level.GetIndexFromXY(x, y)
-	return level.Tiles[idx].TileType == WALL
+	return level.Tiles[idx].TileType == TileTypeWall
 }
 
 // Max returns the larger of x or y.

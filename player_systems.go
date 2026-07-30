@@ -24,7 +24,7 @@ func TakePlayerAction(g *Game) {
 			level.PlayerVisible.Compute(level, pos.X, pos.Y, 8)
 			level.mu.Unlock()
 		} else if x != 0 || y != 0 {
-			if level.Tiles[index].TileType != WALL {
+			if level.Tiles[index].TileType != TileTypeWall {
 				//Its a tile with a monster -- Fight it
 				monsterPosition := Position{X: pos.X + x, Y: pos.Y + y}
 

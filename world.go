@@ -29,9 +29,9 @@ func InitializeWorld(startingLevel *Level, scene *core.Node) (*ecs.Manager, map[
 	name = manager.NewComponent()
 	userMessage = manager.NewComponent()
 
-	playerImg := loadElfMesh()
-	scene.Add(playerImg)
-	playerImg.SetVisible(true)
+	playerMesh := loadElfMesh()
+	scene.Add(playerMesh)
+	playerMesh.SetVisible(true)
 
 	// Get First Room
 	startingRoom := startingLevel.Rooms[0]
@@ -40,13 +40,13 @@ func InitializeWorld(startingLevel *Level, scene *core.Node) (*ecs.Manager, map[
 	manager.NewEntity().
 		AddComponent(player, Player{}).
 		AddComponent(renderable, &Renderable{
-			Image: playerImg,
+			Image: playerMesh,
 		}).
 		AddComponent(movable, Movable{}).
 		AddComponent(position, &Position{
 			X: x,
 			Y: y,
-			Z: playerImg.Position().Z,
+			Z: playerMesh.Position().Z,
 		}).
 		AddComponent(health, &Health{
 			MaxHealth:     30,
@@ -79,55 +79,55 @@ func InitializeWorld(startingLevel *Level, scene *core.Node) (*ecs.Manager, map[
 			mobSpawn := GetDiceRoll(2)
 
 			if mobSpawn == 1 {
-				orcImg := loadGoblinJanitorMesh()
-				orcImg.SetVisible(false)
-				scene.Add(orcImg)
+				orcMesh := loadGoblinJanitorMesh()
+				orcMesh.SetVisible(false)
+				scene.Add(orcMesh)
 
 				manager.NewEntity().
 					AddComponent(monster, &Monster{}).
 					AddComponent(renderable, &Renderable{
-						Image: orcImg,
+						Image: orcMesh,
 					}).
 					AddComponent(position, &Position{
 						X: mX,
 						Y: mY,
-						Z: orcImg.Position().Z,
+						Z: orcMesh.Position().Z,
 					}).
 					AddComponent(health, &Health{
 						MaxHealth:     30,
 						CurrentHealth: 30,
 					}).
 					AddComponent(meleeWeapon, &MeleeWeapon{
-						Name:          "Machete",
+						Name:          "Broom of Doom",
 						MinimumDamage: 4,
 						MaximumDamage: 8,
 						ToHitBonus:    1,
 					}).
 					AddComponent(armor, &Armor{
-						Name:       "Leather",
+						Name:       "Leather boxer",
 						Defense:    5,
 						ArmorClass: 6,
 					}).
-					AddComponent(name, &Name{Label: "Orc"}).
+					AddComponent(name, &Name{Label: "Goblin Janitor"}).
 					AddComponent(userMessage, &UserMessage{
 						AttackMessage:    "",
 						DeadMessage:      "",
 						GameStateMessage: "",
 					})
 			} else {
-				skellyImg := loadSkeletonMesh()
-				skellyImg.SetVisible(false)
-				scene.Add(skellyImg)
+				skeletonMesh := loadSkeletonMesh()
+				skeletonMesh.SetVisible(false)
+				scene.Add(skeletonMesh)
 
 				manager.NewEntity().
 					AddComponent(monster, &Monster{}).
 					AddComponent(renderable, &Renderable{
-						Image: skellyImg,
+						Image: skeletonMesh,
 					}).
 					AddComponent(position, &Position{
 						X: mX,
 						Y: mY,
-						Z: skellyImg.Position().Z,
+						Z: skeletonMesh.Position().Z,
 					}).
 					AddComponent(health, &Health{
 						MaxHealth:     10,

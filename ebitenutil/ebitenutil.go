@@ -8,7 +8,7 @@ import (
 
 var MaterialManager *assets.MaterialManager
 
-func NewImageFromFile(imgPath string) (*graphic.Mesh, string, error) {
+func NewMeshFromFile(imgPath string) (*graphic.Mesh, error) {
 	if MaterialManager == nil {
 		MaterialManager = assets.NewMaterialManager()
 	}
@@ -22,7 +22,7 @@ func NewImageFromFile(imgPath string) (*graphic.Mesh, string, error) {
 		mesh = NewWallMesh(MaterialManager)
 	}
 
-	return mesh, "", nil
+	return mesh, nil
 }
 
 // down is copy from level_g3n to break cyclic dep

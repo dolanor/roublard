@@ -115,7 +115,7 @@ func (as AStar) GetPath(level *Level, start *Position, end *Position) []Position
 		//Note:  If you wish to add Diagonal movement, you can do so by getting all 8 positions
 		if currentNode.Position.Y > 0 {
 			tile := level.Tiles[level.GetIndexFromXY(currentNode.Position.X, currentNode.Position.Y-1)]
-			if tile.TileType != WALL {
+			if tile.TileType != TileTypeWall {
 				//The location is in the map bounds and is walkable
 				upNodePosition := Position{
 					X: currentNode.Position.X,
@@ -129,7 +129,7 @@ func (as AStar) GetPath(level *Level, start *Position, end *Position) []Position
 		}
 		if currentNode.Position.Y < gd.ScreenHeight {
 			tile := level.Tiles[level.GetIndexFromXY(currentNode.Position.X, currentNode.Position.Y+1)]
-			if tile.TileType != WALL {
+			if tile.TileType != TileTypeWall {
 				//The location is in the map bounds and is walkable
 				downNodePosition := Position{
 					X: currentNode.Position.X,
@@ -143,7 +143,7 @@ func (as AStar) GetPath(level *Level, start *Position, end *Position) []Position
 		}
 		if currentNode.Position.X > 0 {
 			tile := level.Tiles[level.GetIndexFromXY(currentNode.Position.X-1, currentNode.Position.Y)]
-			if tile.TileType != WALL {
+			if tile.TileType != TileTypeWall {
 				//The location is in the map bounds and is walkable
 				leftNodePosition := Position{
 					X: currentNode.Position.X - 1,
@@ -157,7 +157,7 @@ func (as AStar) GetPath(level *Level, start *Position, end *Position) []Position
 		}
 		if currentNode.Position.X < gd.ScreenWidth {
 			tile := level.Tiles[level.GetIndexFromXY(currentNode.Position.X+1, currentNode.Position.Y)]
-			if tile.TileType != WALL {
+			if tile.TileType != TileTypeWall {
 				//The location is in the map bounds and is walkable
 				rightNodePosition := Position{
 					X: currentNode.Position.X + 1,
