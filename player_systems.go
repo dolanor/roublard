@@ -10,7 +10,7 @@ func TakePlayerAction(g *Game) {
 	level := g.Map.CurrentLevel
 
 	for _, result := range g.World.Query(players) {
-		pos := result.Components[position].(*Position)
+		pos := result.Components[positions].(*Position)
 		index := level.GetIndexFromXY(pos.X+x, pos.Y+y)
 
 		tile := level.Tiles[index]

@@ -9,13 +9,13 @@ func UpdateMonster(game *Game) {
 	playerPosition := Position{}
 
 	for _, plr := range game.World.Query(game.WorldTags["players"]) {
-		pos := plr.Components[position].(*Position)
+		pos := plr.Components[positions].(*Position)
 		playerPosition.X = pos.X
 		playerPosition.Y = pos.Y
 	}
 	for _, result := range game.World.Query(game.WorldTags["monsters"]) {
-		pos := result.Components[position].(*Position)
-		mon := result.Components[monster].(*Monster)
+		pos := result.Components[positions].(*Position)
+		mon := result.Components[monsters].(*Monster)
 		_ = mon
 
 		monsterSees := fov.New()
@@ -25,7 +25,7 @@ func UpdateMonster(game *Game) {
 				//The monster is right next to the player. Just smack him down
 				AttackSystem(game, pos, &playerPosition)
 
-				if result.Components[health].(*Health).CurrentHealth <= 0 {
+				if result.Components[healths].(*Health).CurrentHealth <= 0 {
 					//this monster is dead
 					//clear the tile
 					t := l.Tiles[l.GetIndexFromXY(pos.X, pos.Y)]

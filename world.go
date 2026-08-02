@@ -5,14 +5,14 @@ import (
 	"github.com/g3n/engine/core"
 )
 
-var position *ecs.Component
-var renderable *ecs.Component
-var monster *ecs.Component
-var health *ecs.Component
-var meleeWeapon *ecs.Component
-var armor *ecs.Component
-var name *ecs.Component
-var userMessage *ecs.Component
+var positions *ecs.Component
+var renderables *ecs.Component
+var monsters *ecs.Component
+var healths *ecs.Component
+var meleeWeapons *ecs.Component
+var armors *ecs.Component
+var names *ecs.Component
+var userMessages *ecs.Component
 
 func InitializeWorld(startingLevel *Level) (*ecs.Manager, map[string]ecs.Tag, []core.INode) {
 	tags := make(map[string]ecs.Tag)
@@ -20,15 +20,15 @@ func InitializeWorld(startingLevel *Level) (*ecs.Manager, map[string]ecs.Tag, []
 	meshes := []core.INode{}
 
 	player := manager.NewComponent()
-	position = manager.NewComponent()
-	renderable = manager.NewComponent()
+	positions = manager.NewComponent()
+	renderables = manager.NewComponent()
 	movable := manager.NewComponent()
-	monster = manager.NewComponent()
-	health = manager.NewComponent()
-	meleeWeapon = manager.NewComponent()
-	armor = manager.NewComponent()
-	name = manager.NewComponent()
-	userMessage = manager.NewComponent()
+	monsters = manager.NewComponent()
+	healths = manager.NewComponent()
+	meleeWeapons = manager.NewComponent()
+	armors = manager.NewComponent()
+	names = manager.NewComponent()
+	userMessages = manager.NewComponent()
 
 	playerMesh := loadElfMesh()
 	meshes = append(meshes, playerMesh)
@@ -40,32 +40,32 @@ func InitializeWorld(startingLevel *Level) (*ecs.Manager, map[string]ecs.Tag, []
 
 	manager.NewEntity().
 		AddComponent(player, Player{}).
-		AddComponent(renderable, &Renderable{
+		AddComponent(renderables, &Renderable{
 			Image: playerMesh,
 		}).
 		AddComponent(movable, Movable{}).
-		AddComponent(position, &Position{
+		AddComponent(positions, &Position{
 			X: x,
 			Y: y,
 			Z: playerMesh.Position().Z,
 		}).
-		AddComponent(health, &Health{
+		AddComponent(healths, &Health{
 			MaxHealth:     30,
 			CurrentHealth: 30,
 		}).
-		AddComponent(meleeWeapon, &MeleeWeapon{
+		AddComponent(meleeWeapons, &MeleeWeapon{
 			Name:          "Battle Axe",
 			MinimumDamage: 10,
 			MaximumDamage: 20,
 			ToHitBonus:    3,
 		}).
-		AddComponent(armor, &Armor{
+		AddComponent(armors, &Armor{
 			Name:       "Plate Armor",
 			Defense:    15,
 			ArmorClass: 18,
 		}).
-		AddComponent(name, &Name{Label: "Player"}).
-		AddComponent(userMessage, &UserMessage{
+		AddComponent(names, &Name{Label: "Player"}).
+		AddComponent(userMessages, &UserMessage{
 			AttackMessage:    "",
 			DeadMessage:      "",
 			GameStateMessage: "",
@@ -156,17 +156,17 @@ func InitializeWorld(startingLevel *Level) (*ecs.Manager, map[string]ecs.Tag, []
 		}
 	}
 
-	players := ecs.BuildTag(player, position, health, meleeWeapon, armor, name, userMessage)
-	tags["players"] = players
+	playerTags := ecs.BuildTag(player, positions, healths, meleeWeapons, armors, names, userMessages)
+	tags["players"] = playerTags
 
-	renderables := ecs.BuildTag(renderable, position)
-	tags["renderables"] = renderables
+	renderableTags := ecs.BuildTag(renderables, positions)
+	tags["renderables"] = renderableTags
 
-	monsters := ecs.BuildTag(monster, position, health, meleeWeapon, armor, name, userMessage, renderable)
-	tags["monsters"] = monsters
+	monsterTags := ecs.BuildTag(monsters, positions, healths, meleeWeapons, armors, names, userMessages, renderables)
+	tags["monsters"] = monsterTags
 
-	messengers := ecs.BuildTag(userMessage)
-	tags["messengers"] = messengers
+	messengerTags := ecs.BuildTag(userMessages)
+	tags["messengers"] = messengerTags
 
 	return manager, tags, meshes
 }

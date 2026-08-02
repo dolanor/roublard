@@ -8,8 +8,8 @@ import (
 
 func ProcessRenderables(g *Game, level *Level) {
 	for _, result := range g.World.Query(g.WorldTags["renderables"]) {
-		pos := result.Components[position].(*Position)
-		node := result.Components[renderable].(*Renderable)
+		pos := result.Components[positions].(*Position)
+		node := result.Components[renderables].(*Renderable)
 
 		node.Image.GetNode().SetPosition(float32(pos.X), float32(pos.Z), float32(pos.Y))
 		level.mu.Lock()

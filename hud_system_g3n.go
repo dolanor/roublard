@@ -22,15 +22,15 @@ func CreateHUDWindow(panel *gui.Panel, width, height int) {
 
 func ProcessHUDG3N(g *Game) {
 	for _, p := range g.World.Query(g.WorldTags["players"]) {
-		h := p.Components[health].(*Health)
+		h := p.Components[healths].(*Health)
 		healthText := fmt.Sprintf("Health: %d / %d", h.CurrentHealth, h.MaxHealth)
 
-		ac := p.Components[armor].(*Armor)
+		ac := p.Components[armors].(*Armor)
 		acText := fmt.Sprintf("Armor Class: %d", ac.ArmorClass)
 
 		defText := fmt.Sprintf("Defense: %d", ac.Defense)
 
-		wpn := p.Components[meleeWeapon].(*MeleeWeapon)
+		wpn := p.Components[meleeWeapons].(*MeleeWeapon)
 		dmg := fmt.Sprintf("Damage: %d - %d", wpn.MinimumDamage, wpn.MaximumDamage)
 		bonus := fmt.Sprintf("To Hit Bonus: %d", wpn.ToHitBonus)
 

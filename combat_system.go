@@ -12,7 +12,7 @@ func AttackSystem(g *Game, attackerPosition *Position, defenderPosition *Positio
 
 	//Get the attacker and defender if either is a player
 	for _, playerCombatant := range g.World.Query(g.WorldTags["players"]) {
-		pos := playerCombatant.Components[position].(*Position)
+		pos := playerCombatant.Components[positions].(*Position)
 
 		if pos.IsEqual(attackerPosition) {
 			//This is the attacker
@@ -25,7 +25,7 @@ func AttackSystem(g *Game, attackerPosition *Position, defenderPosition *Positio
 
 	//Get the attacker and defender if either is a monster
 	for _, cbt := range g.World.Query(g.WorldTags["monsters"]) {
-		pos := cbt.Components[position].(*Position)
+		pos := cbt.Components[positions].(*Position)
 
 		if pos.IsEqual(attackerPosition) {
 			//This is the attacker
@@ -41,17 +41,17 @@ func AttackSystem(g *Game, attackerPosition *Position, defenderPosition *Positio
 		return
 	}
 	//Grab the required information
-	defenderArmor := defender.Components[armor].(*Armor)
-	defenderHealth := defender.Components[health].(*Health)
-	defenderName := defender.Components[name].(*Name).Label
-	defenderMessage := defender.Components[userMessage].(*UserMessage)
+	defenderArmor := defender.Components[armors].(*Armor)
+	defenderHealth := defender.Components[healths].(*Health)
+	defenderName := defender.Components[names].(*Name).Label
+	defenderMessage := defender.Components[userMessages].(*UserMessage)
 
-	attackerWeapon := attacker.Components[meleeWeapon].(*MeleeWeapon)
-	attackerName := attacker.Components[name].(*Name).Label
-	attackerMessage := attacker.Components[userMessage].(*UserMessage)
+	attackerWeapon := attacker.Components[meleeWeapons].(*MeleeWeapon)
+	attackerName := attacker.Components[names].(*Name).Label
+	attackerMessage := attacker.Components[userMessages].(*UserMessage)
 
 	//if the attacker is dead, don't let them attackerWeapon
-	if attacker.Components[health].(*Health).CurrentHealth <= 0 {
+	if attacker.Components[healths].(*Health).CurrentHealth <= 0 {
 		return
 	}
 	//Roll a d10 to hit
@@ -70,7 +70,7 @@ func AttackSystem(g *Game, attackerPosition *Position, defenderPosition *Positio
 		attackerMessage.AttackMessage = fmt.Sprintf("%s swings %s at %s and hits for %d health.", attackerName, attackerWeapon.Name, defenderName, damageDone)
 
 		if defenderHealth.CurrentHealth <= 0 {
-			r, ok := defender.Components[renderable].(*Renderable)
+			r, ok := defender.Components[renderables].(*Renderable)
 			if ok {
 				go animateDeath(r)
 			}

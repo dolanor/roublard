@@ -40,7 +40,7 @@ func ProcessUserLogG3N(g *Game) {
 	currentMessages := make([]string, 0, 5)
 
 	for _, m := range g.World.Query(g.WorldTags["messengers"]) {
-		messages := m.Components[userMessage].(*UserMessage)
+		messages := m.Components[userMessages].(*UserMessage)
 		if messages.AttackMessage != "" {
 			currentMessages = append(currentMessages, messages.AttackMessage)
 			fmt.Println(messages.AttackMessage)
@@ -48,7 +48,7 @@ func ProcessUserLogG3N(g *Game) {
 		}
 	}
 	for _, m := range g.World.Query(g.WorldTags["messengers"]) {
-		messages := m.Components[userMessage].(*UserMessage)
+		messages := m.Components[userMessages].(*UserMessage)
 		if messages.DeadMessage != "" {
 			currentMessages = append(currentMessages, messages.DeadMessage)
 			fmt.Println(messages.DeadMessage)
