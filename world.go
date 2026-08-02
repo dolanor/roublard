@@ -84,75 +84,44 @@ func InitializeWorld(startingLevel *Level) (*ecs.Manager, map[string]ecs.Tag, []
 				orcMesh.SetVisible(false)
 				meshes = append(meshes, orcMesh)
 
-				manager.NewEntity().
-					AddComponent(monster, &Monster{}).
-					AddComponent(renderable, &Renderable{
-						Image: orcMesh,
-					}).
-					AddComponent(position, &Position{
-						X: mX,
-						Y: mY,
-						Z: orcMesh.Position().Z,
-					}).
-					AddComponent(health, &Health{
-						MaxHealth:     30,
-						CurrentHealth: 30,
-					}).
-					AddComponent(meleeWeapon, &MeleeWeapon{
+				newMonster(manager, orcMesh,
+					mX, mY, orcMesh.Position().Z,
+					30, 30,
+					&MeleeWeapon{
 						Name:          "Broom of Doom",
 						MinimumDamage: 4,
 						MaximumDamage: 8,
 						ToHitBonus:    1,
-					}).
-					AddComponent(armor, &Armor{
+					},
+					&Armor{
 						Name:       "Leather boxer",
 						Defense:    5,
 						ArmorClass: 6,
-					}).
-					AddComponent(name, &Name{Label: "Goblin Janitor"}).
-					AddComponent(userMessage, &UserMessage{
-						AttackMessage:    "",
-						DeadMessage:      "",
-						GameStateMessage: "",
-					})
+					},
+					"Goblin Janitor",
+				)
 			} else {
 				skeletonMesh := loadSkeletonMesh()
 				skeletonMesh.SetVisible(false)
 				meshes = append(meshes, skeletonMesh)
 
-				manager.NewEntity().
-					AddComponent(monster, &Monster{}).
-					AddComponent(renderable, &Renderable{
-						Image: skeletonMesh,
-					}).
-					AddComponent(position, &Position{
-						X: mX,
-						Y: mY,
-						Z: skeletonMesh.Position().Z,
-					}).
-					AddComponent(health, &Health{
-						MaxHealth:     10,
-						CurrentHealth: 10,
-					}).
-					AddComponent(meleeWeapon, &MeleeWeapon{
+				newMonster(manager, skeletonMesh,
+					mX, mY, skeletonMesh.Position().Z,
+					10, 10,
+					&MeleeWeapon{
 						Name:          "Short Sword",
 						MinimumDamage: 2,
 						MaximumDamage: 6,
 						ToHitBonus:    0,
-					}).
-					AddComponent(armor, &Armor{
+					},
+					&Armor{
 						Name:       "Bone",
 						Defense:    3,
 						ArmorClass: 4,
-					}).
-					AddComponent(name, &Name{Label: "Skeleton"}).
-					AddComponent(userMessage, &UserMessage{
-						AttackMessage:    "",
-						DeadMessage:      "",
-						GameStateMessage: "",
-					})
+					},
+					"Skeleton",
+				)
 			}
-
 		}
 	}
 
@@ -169,4 +138,25 @@ func InitializeWorld(startingLevel *Level) (*ecs.Manager, map[string]ecs.Tag, []
 	tags["messengers"] = messengerTags
 
 	return manager, tags, meshes
+}
+
+func newMonster(manager *ecs.Manager, mesh core.INode, x, y int, z float32, currentHealth, maxHealth int, meleeWeapon, armor any, name string) {
+	manager.NewEntity().
+		AddComponent(monsters, &Monster{}).
+		AddComponent(renderables, &Renderable{
+			Image: mesh,
+		}).
+		AddComponent(positions, &Position{
+			X: x,
+			Y: y,
+			Z: z,
+		}).
+		AddComponent(healths, &Health{
+			CurrentHealth: currentHealth,
+			MaxHealth:     maxHealth,
+		}).
+		AddComponent(meleeWeapons, meleeWeapon).
+		AddComponent(armors, armor).
+		AddComponent(names, &Name{Label: name}).
+		AddComponent(userMessages, &UserMessage{})
 }
