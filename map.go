@@ -10,13 +10,16 @@ type GameMap struct {
 func NewGameMap() *GameMap {
 	//Return a new game map of a single level for now
 	l := NewLevel()
-	levels := make([]*Level, 0)
-	levels = append(levels, l)
-	d := Dungeon{Name: "default", Levels: levels}
-	dungeons := make([]Dungeon, 0)
 
-	dungeons = append(dungeons, d)
-	gm := &GameMap{Dungeons: dungeons, CurrentLevel: l}
+	d := Dungeon{
+		Name:   "default",
+		Levels: []*Level{l},
+	}
+
+	gm := &GameMap{
+		Dungeons:     []Dungeon{d},
+		CurrentLevel: l,
+	}
 	return gm
 
 }
