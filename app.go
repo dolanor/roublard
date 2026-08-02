@@ -14,30 +14,6 @@ import (
 	"github.com/g3n/engine/window"
 )
 
-func (g3nApp *G3NApp) UpdateLogicLoop() {
-	for range time.Tick(time.Second / 120) {
-		err := g3nApp.UpdateLogic()
-		if err != nil {
-			g3nApp.log.Error("update logic", "error", err)
-		}
-	}
-}
-
-// Update is the rendering update callback for g3n.
-// It is different from the Update() callback for ebiten which is more the logic update callback.
-// our logic callback is [Game.logicUpdateLoop].
-func (g3nApp *G3NApp) Update(renderer *renderer.Renderer, deltaTime time.Duration) {
-	log := g3nApp.log.With("func", "update")
-	g3nApp.app.Gls().Clear(gls.DEPTH_BUFFER_BIT | gls.STENCIL_BUFFER_BIT | gls.COLOR_BUFFER_BIT)
-
-	ProcessRenderables(g3nApp.game, g3nApp.game.Map.CurrentLevel)
-
-	err := renderer.Render(g3nApp.scene, g3nApp.cam)
-	if err != nil {
-		log.Error("render", "error", err)
-	}
-}
-
 type G3NApp struct {
 	game *Game
 
@@ -96,6 +72,47 @@ func NewG3NApp(log *slog.Logger, game *Game, meshes []core.INode) *G3NApp {
 		scene: scene,
 		cam:   cam,
 		log:   log,
+	}
+}
+
+func (g3nApp *G3NApp) UpdateLogicLoop() {
+	for range time.Tick(time.Second / 120) {
+		err := g3nApp.UpdateLogic()
+		if err != nil {
+			g3nApp.log.Error("update logic", "error", err)
+		}
+	}
+}
+
+// Update is called each tic.
+func (g3nApp *G3NApp) UpdateLogic() error {
+	g3nApp.game.TurnCounter++
+	if g3nApp.game.Turn == PlayerTurn && g3nApp.game.TurnCounter > 20 {
+		TakePlayerAction(g3nApp.game)
+	}
+	if g3nApp.game.Turn == MonsterTurn {
+		UpdateMonster(g3nApp.game)
+	}
+
+	ProcessUserLogG3N(g3nApp.game)
+	ProcessHUDG3N(g3nApp.game)
+
+	return nil
+
+}
+
+// Update is the rendering update callback for g3n.
+// It is different from the Update() callback for ebiten which is more the logic update callback.
+// our logic callback is [Game.logicUpdateLoop].
+func (g3nApp *G3NApp) Update(renderer *renderer.Renderer, deltaTime time.Duration) {
+	log := g3nApp.log.With("func", "update")
+	g3nApp.app.Gls().Clear(gls.DEPTH_BUFFER_BIT | gls.STENCIL_BUFFER_BIT | gls.COLOR_BUFFER_BIT)
+
+	ProcessRenderables(g3nApp.game, g3nApp.game.Map.CurrentLevel)
+
+	err := renderer.Render(g3nApp.scene, g3nApp.cam)
+	if err != nil {
+		log.Error("render", "error", err)
 	}
 }
 
