@@ -42,13 +42,15 @@ type MapTile struct {
 
 // NewLevel creates a new game level in a dungeon.
 func NewLevel() *Level {
-	l := Level{}
 	loadTileMeshes()
 
-	rooms := make([]Rect, 0)
-	l.Rooms = rooms
+	l := Level{
+		Rooms:         []Rect{},
+		PlayerVisible: fov.New(),
+	}
+
 	l.GenerateLevelTiles()
-	l.PlayerVisible = fov.New()
+
 	return &l
 }
 
@@ -78,54 +80,55 @@ func (level *Level) GetIndexFromXY(x int, y int) int {
 
 // GenerateLevelTiles creates a new Dungeon Level Map.
 func (level *Level) GenerateLevelTiles() {
-	MIN_SIZE := 6
-	MAX_SIZE := 10
-	MAX_ROOMS := 30
+	const (
+		minSize  = 6
+		maxSize  = 10
+		maxRooms = 30
+	)
 
 	gd := NewGameData()
 	levelHeight = gd.ScreenHeight - gd.UIHeight
 	tiles := level.createTiles()
 	level.Tiles = tiles
-	contains_rooms := false
+	containsRooms := false
 
-	for idx := 0; idx < MAX_ROOMS; idx++ {
-		w := GetRandomBetween(MIN_SIZE, MAX_SIZE)
-		h := GetRandomBetween(MIN_SIZE, MAX_SIZE)
+	for range maxRooms {
+		w := GetRandomBetween(minSize, maxSize)
+		h := GetRandomBetween(minSize, maxSize)
 		x := GetDiceRoll(gd.ScreenWidth - w - 1)
 		y := GetDiceRoll(levelHeight - h - 1)
-		new_room := NewRect(x, y, w, h)
+
+		newRoom := NewRect(x, y, w, h)
 
 		okToAdd := true
-
 		for _, otherRoom := range level.Rooms {
-			if new_room.Intersect(otherRoom) {
+			if newRoom.Intersect(otherRoom) {
 				okToAdd = false
 				break
 			}
 		}
+
 		if okToAdd {
-			level.createRoom(new_room)
-			if contains_rooms {
-				newX, newY := new_room.Center()
+			level.createRoom(newRoom)
+			debugPrintTiles(tiles, gd)
+			if containsRooms {
+				newX, newY := newRoom.Center()
 				prevX, prevY := level.Rooms[len(level.Rooms)-1].Center()
 				coinflip := GetDiceRoll(2)
 				if coinflip == 2 {
 					level.createHorizontalTunnel(prevX, newX, prevY)
 					level.createVerticalTunnel(prevY, newY, newX)
-
 				} else {
 					level.createHorizontalTunnel(prevX, newX, newY)
 					level.createVerticalTunnel(prevY, newY, prevX)
 				}
-
 			}
 
-			level.Rooms = append(level.Rooms, new_room)
-			contains_rooms = true
+			level.Rooms = append(level.Rooms, newRoom)
+			containsRooms = true
 		}
 	}
 	debugPrintTiles(tiles, gd)
-
 }
 
 func (level *Level) createHorizontalTunnel(x1 int, x2 int, y int) {
@@ -137,7 +140,6 @@ func (level *Level) createHorizontalTunnel(x1 int, x2 int, y int) {
 			level.Tiles[index].IsWall = false
 			level.Tiles[index].TileType = TileTypeFloor
 			level.Tiles[index].Mesh = CloneAndPosition(floor, x, y)
-
 		}
 	}
 }
@@ -151,7 +153,6 @@ func (level *Level) createVerticalTunnel(y1 int, y2 int, x int) {
 			level.Tiles[index].IsWall = false
 			level.Tiles[index].TileType = TileTypeFloor
 			level.Tiles[index].Mesh = CloneAndPosition(floor, x, y)
-
 		}
 	}
 }
@@ -161,8 +162,8 @@ func (level *Level) createTiles() []*MapTile {
 	gd := NewGameData()
 	tiles := make([]*MapTile, levelHeight*gd.ScreenWidth)
 	index := 0
-	for x := 0; x < gd.ScreenWidth; x++ {
-		for y := 0; y < levelHeight; y++ {
+	for x := range gd.ScreenWidth {
+		for y := range levelHeight {
 			index = level.GetIndexFromXY(x, y)
 			tile := MapTile{
 				PixelX:     x * gd.TileWidth,
