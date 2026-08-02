@@ -67,7 +67,7 @@ func AttackSystem(g *Game, attackerPosition *Position, defenderPosition *Positio
 			damageDone = 0
 		}
 		defenderHealth.CurrentHealth -= damageDone
-		attackerMessage.AttackMessage = fmt.Sprintf("%s swings %s at %s and hits for %d health.\n", attackerName, attackerWeapon.Name, defenderName, damageDone)
+		attackerMessage.AttackMessage = fmt.Sprintf("%s swings %s at %s and hits for %d health.", attackerName, attackerWeapon.Name, defenderName, damageDone)
 
 		if defenderHealth.CurrentHealth <= 0 {
 			r, ok := defender.Components[renderable].(*Renderable)
@@ -75,14 +75,14 @@ func AttackSystem(g *Game, attackerPosition *Position, defenderPosition *Positio
 				go animateDeath(r)
 			}
 
-			defenderMessage.DeadMessage = fmt.Sprintf("%s has died!\n", defenderName)
+			defenderMessage.DeadMessage = fmt.Sprintf("%s has died!", defenderName)
 			if defenderName == "Player" {
-				defenderMessage.GameStateMessage = "Game Over!\n"
+				defenderMessage.GameStateMessage = "Game Over!"
 				g.Turn = GameOver
 			}
 		}
 
 	} else {
-		attackerMessage.AttackMessage = fmt.Sprintf("%s swings %s at %s and misses.\n", attackerName, attackerWeapon.Name, defenderName)
+		attackerMessage.AttackMessage = fmt.Sprintf("%s swings %s at %s and misses.", attackerName, attackerWeapon.Name, defenderName)
 	}
 }

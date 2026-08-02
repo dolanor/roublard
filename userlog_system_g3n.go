@@ -43,7 +43,7 @@ func ProcessUserLogG3N(g *Game) {
 		messages := m.Components[userMessage].(*UserMessage)
 		if messages.AttackMessage != "" {
 			currentMessages = append(currentMessages, messages.AttackMessage)
-			fmt.Print(messages.AttackMessage)
+			fmt.Println(messages.AttackMessage)
 			messages.AttackMessage = ""
 		}
 	}
@@ -51,13 +51,13 @@ func ProcessUserLogG3N(g *Game) {
 		messages := m.Components[userMessage].(*UserMessage)
 		if messages.DeadMessage != "" {
 			currentMessages = append(currentMessages, messages.DeadMessage)
-			fmt.Print(messages.DeadMessage)
+			fmt.Println(messages.DeadMessage)
 			messages.DeadMessage = ""
 			g.World.DisposeEntity(m.Entity)
 		}
 		if messages.GameStateMessage != "" {
 			currentMessages = append(currentMessages, messages.GameStateMessage)
-			fmt.Print(messages.GameStateMessage)
+			fmt.Println(messages.GameStateMessage)
 			messages.GameStateMessage = ""
 		}
 
@@ -65,9 +65,6 @@ func ProcessUserLogG3N(g *Game) {
 
 	for _, msg := range currentMessages {
 		if msg != "" {
-			// TODO: remove that later
-			// remove the \n that is currently added in the combat system
-			msg := msg[:len(msg)-1]
 			lbl := gui.NewLabel(msg)
 			lbl.SetColor(math32.NewColor("black"))
 			lbl.SetBgColor(math32.NewColor("white"))
