@@ -50,14 +50,14 @@ func InitializeWorld(startingLevel *Level) (*ecs.Manager, map[string]ecs.Tag, []
 			Z: playerMesh.Position().Z,
 		}).
 		AddComponent(healths, &Health{
-			MaxHealth:     30,
-			CurrentHealth: 30,
+			Max:     30,
+			Current: 30,
 		}).
 		AddComponent(meleeWeapons, &MeleeWeapon{
-			Name:          "Battle Axe",
-			MinimumDamage: 10,
-			MaximumDamage: 20,
-			ToHitBonus:    3,
+			Name:       "Battle Axe",
+			MinDamage:  10,
+			MaxDamage:  20,
+			ToHitBonus: 3,
 		}).
 		AddComponent(armors, &Armor{
 			Name:       "Plate Armor",
@@ -88,10 +88,10 @@ func InitializeWorld(startingLevel *Level) (*ecs.Manager, map[string]ecs.Tag, []
 					mX, mY, orcMesh.Position().Z,
 					30, 30,
 					&MeleeWeapon{
-						Name:          "Broom of Doom",
-						MinimumDamage: 4,
-						MaximumDamage: 8,
-						ToHitBonus:    1,
+						Name:       "Broom of Doom",
+						MinDamage:  4,
+						MaxDamage:  8,
+						ToHitBonus: 1,
 					},
 					&Armor{
 						Name:       "Leather boxer",
@@ -109,10 +109,10 @@ func InitializeWorld(startingLevel *Level) (*ecs.Manager, map[string]ecs.Tag, []
 					mX, mY, skeletonMesh.Position().Z,
 					10, 10,
 					&MeleeWeapon{
-						Name:          "Short Sword",
-						MinimumDamage: 2,
-						MaximumDamage: 6,
-						ToHitBonus:    0,
+						Name:       "Short Sword",
+						MinDamage:  2,
+						MaxDamage:  6,
+						ToHitBonus: 0,
 					},
 					&Armor{
 						Name:       "Bone",
@@ -152,8 +152,8 @@ func newMonster(manager *ecs.Manager, mesh core.INode, x, y int, z float32, curr
 			Z: z,
 		}).
 		AddComponent(healths, &Health{
-			CurrentHealth: currentHealth,
-			MaxHealth:     maxHealth,
+			Current: currentHealth,
+			Max:     maxHealth,
 		}).
 		AddComponent(meleeWeapons, meleeWeapon).
 		AddComponent(armors, armor).

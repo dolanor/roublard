@@ -103,7 +103,7 @@ func (g3nApp *G3NApp) UpdateLogic() error {
 
 // Update is the rendering update callback for g3n.
 // It is different from the Update() callback for ebiten which is more the logic update callback.
-// our logic callback is [Game.logicUpdateLoop].
+// our logic callback is [G3NApp.UpdateLogicLoop].
 func (g3nApp *G3NApp) Update(renderer *renderer.Renderer, deltaTime time.Duration) {
 	log := g3nApp.log.With("func", "update")
 	g3nApp.app.Gls().Clear(gls.DEPTH_BUFFER_BIT | gls.STENCIL_BUFFER_BIT | gls.COLOR_BUFFER_BIT)

@@ -38,15 +38,15 @@ type Name struct {
 }
 
 type Health struct {
-	MaxHealth     int
-	CurrentHealth int
+	Max     int
+	Current int
 }
 
 type MeleeWeapon struct {
-	Name          string
-	MinimumDamage int
-	MaximumDamage int
-	ToHitBonus    int
+	Name       string
+	MinDamage  int
+	MaxDamage  int
+	ToHitBonus int
 }
 
 type Armor struct {

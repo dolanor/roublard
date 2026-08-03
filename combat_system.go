@@ -53,7 +53,7 @@ func AttackSystem(g *Game, attackerPosition *Position, defenderPosition *Positio
 	attackerMessage := attacker.Components[userMessages].(*UserMessage)
 
 	//if the attacker is dead, don't let them attackerWeapon
-	if attacker.Components[healths].(*Health).CurrentHealth <= 0 {
+	if attacker.Components[healths].(*Health).Current <= 0 {
 		return
 	}
 
@@ -62,17 +62,17 @@ func AttackSystem(g *Game, attackerPosition *Position, defenderPosition *Positio
 
 	if toHitRoll+attackerWeapon.ToHitBonus > defenderArmor.ArmorClass {
 		// It's a hit!
-		damageRoll := GetRandomBetween(attackerWeapon.MinimumDamage, attackerWeapon.MaximumDamage)
+		damageRoll := GetRandomBetween(attackerWeapon.MinDamage, attackerWeapon.MaxDamage)
 
 		damageDone := damageRoll - defenderArmor.Defense
 		// Let's not have the weapon heal the defender
 		if damageDone < 0 {
 			damageDone = 0
 		}
-		defenderHealth.CurrentHealth -= damageDone
+		defenderHealth.Current -= damageDone
 		attackerMessage.AttackMessage = fmt.Sprintf("%s swings %s at %s and hits for %d health.", attackerName, attackerWeapon.Name, defenderName, damageDone)
 
-		if defenderHealth.CurrentHealth <= 0 {
+		if defenderHealth.Current <= 0 {
 			r, ok := defender.Components[renderables].(*Renderable)
 			if ok {
 				go animateDeath(r)

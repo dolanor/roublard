@@ -24,7 +24,7 @@ func UpdateMonster(game *Game) {
 				//The monster is right next to the player. Just smack him down
 				AttackSystem(game, pos, &playerPosition)
 
-				if result.Components[healths].(*Health).CurrentHealth <= 0 {
+				if result.Components[healths].(*Health).Current <= 0 {
 					//this monster is dead
 					//clear the tile
 					t := l.Tiles[l.GetIndexFromXY(pos.X, pos.Y)]
