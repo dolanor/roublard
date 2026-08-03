@@ -14,7 +14,7 @@ type TileType int
 var floor *graphic.Mesh
 var wall *graphic.Mesh
 
-var levelHeight int = 0
+var levelHeight int
 
 const (
 	TileTypeWall TileType = iota

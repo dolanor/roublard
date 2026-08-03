@@ -7,8 +7,8 @@ import (
 )
 
 func AttackSystem(g *Game, attackerPosition *Position, defenderPosition *Position) {
-	var attacker *ecs.QueryResult = nil
-	var defender *ecs.QueryResult = nil
+	var attacker *ecs.QueryResult
+	var defender *ecs.QueryResult
 
 	//Get the attacker and defender if either is a player
 	for _, playerCombatant := range g.World.Query(g.WorldTags["players"]) {
