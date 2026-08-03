@@ -6,11 +6,44 @@ import (
 	"image"
 	"image/draw"
 	"image/png"
+	"os"
+	"path/filepath"
 
 	"github.com/g3n/engine/loader/gltf"
 	"github.com/g3n/engine/material"
 	"github.com/g3n/engine/texture"
 )
+
+func floorMat(texName string) material.IMaterial {
+	oriDir, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+
+	defer func() {
+		err = os.Chdir(oriDir)
+		if err != nil {
+			panic(err)
+		}
+	}()
+
+	err = os.Chdir(filepath.Join("assets/textures/", texName))
+	if err != nil {
+		panic(err)
+	}
+
+	model, err := gltf.ParseJSON(texName + ".gltf")
+	if err != nil {
+		panic(err)
+	}
+
+	mat, err := model.LoadMaterial(0)
+	if err != nil {
+		panic(err)
+	}
+
+	return mat
+}
 
 func wallMat() material.IMaterial {
 	model, err := gltf.ParseBin("assets/wood_inlaid_stone_wall_1k.glb")

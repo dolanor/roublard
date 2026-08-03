@@ -20,7 +20,7 @@ func NewMaterialManager() *MaterialManager {
 		cache: map[MaterialID]material.IMaterial{},
 	}
 
-	floor := matFromTex(Floor())
+	floor := floorMat("cobblestone_floor_09_4k")
 	mm.Add(MaterialID("floor"), floor)
 
 	wall := wallMat()
