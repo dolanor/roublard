@@ -19,7 +19,6 @@ func ProcessRenderables(g *Game, level *Level) {
 			node.Image.SetVisible(false)
 		}
 		level.mu.Unlock()
-
 	}
 }
 

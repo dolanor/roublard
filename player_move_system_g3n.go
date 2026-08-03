@@ -8,6 +8,15 @@ import (
 	"github.com/dolanor/roublard/ebitenutil"
 )
 
+type Move string
+
+const (
+	MoveLeft  Move = "move_left"
+	MoveRight Move = "move_right"
+	MoveUp    Move = "move_up"
+	MoveDown  Move = "move_down"
+)
+
 func updateMapVisibility(level *Level) {
 	gd := NewGameData()
 	solidMat := ebitenutil.MaterialManager.Get(assets.MaterialID("wall"))
@@ -46,15 +55,6 @@ func updateMapVisibility(level *Level) {
 	}
 }
 
-type Move string
-
-const (
-	MoveLeft  Move = "move_left"
-	MoveRight Move = "move_right"
-	MoveUp    Move = "move_up"
-	MoveDown  Move = "move_down"
-)
-
 func (g3nApp *G3NApp) onKey(evname string, ev any) {
 	g3nApp.game.currentX, g3nApp.game.currentY = g3nApp.processKeys(ev)
 }
@@ -89,7 +89,6 @@ func (g3nApp *G3NApp) processKeys(ev any) (x, y int) {
 				g3nApp.cam.SetProjection(camera.Perspective)
 				g3nApp.orthoToggle = !g3nApp.orthoToggle
 			}
-
 		}
 	case window.KeySlash:
 		fs := g3nApp.app.FullScreen()

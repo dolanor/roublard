@@ -175,7 +175,6 @@ func (level *Level) createTiles() []*MapTile {
 				IsWall:     true,
 			}
 			tiles[index] = &tile
-
 		}
 	}
 	return tiles

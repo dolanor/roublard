@@ -37,6 +37,7 @@ func reverseSlice(data interface{}) {
 	if value.Kind() != reflect.Slice {
 		panic(errors.New("data must be a slice type"))
 	}
+
 	valueLen := value.Len()
 	for i := 0; i <= int((valueLen-1)/2); i++ {
 		reverseIndex := valueLen - 1 - i

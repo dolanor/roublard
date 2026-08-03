@@ -60,7 +60,6 @@ func ProcessUserLogG3N(g *Game) {
 			fmt.Println(messages.GameStateMessage)
 			messages.GameStateMessage = ""
 		}
-
 	}
 
 	for _, msg := range currentMessages {
@@ -68,6 +67,7 @@ func ProcessUserLogG3N(g *Game) {
 			lbl := gui.NewLabel(msg)
 			lbl.SetColor(math32.NewColor("black"))
 			lbl.SetBgColor(math32.NewColor("white"))
+
 			logList.Add(lbl)
 			logList.ScrollDown()
 			logList.ScrollDown()

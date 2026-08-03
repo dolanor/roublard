@@ -9,7 +9,6 @@ import (
 var hudLabel *gui.Label
 
 func CreateHUDWindow(panel *gui.Panel, width, height int) {
-
 	w1 := gui.NewWindow(float32(width), float32(height))
 	w1.SetPosition(float32(width), 3*float32(height))
 	w1.SetResizable(true)

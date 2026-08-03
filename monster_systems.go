@@ -13,10 +13,9 @@ func UpdateMonster(game *Game) {
 		playerPosition.X = pos.X
 		playerPosition.Y = pos.Y
 	}
+
 	for _, result := range game.World.Query(game.WorldTags["monsters"]) {
 		pos := result.Components[positions].(*Position)
-		mon := result.Components[monsters].(*Monster)
-		_ = mon
 
 		monsterSees := fov.New()
 		monsterSees.Compute(l, pos.X, pos.Y, 8)
@@ -44,9 +43,7 @@ func UpdateMonster(game *Game) {
 					}
 				}
 			}
-
 		}
-
 	}
 
 	game.Turn = PlayerTurn

@@ -36,10 +36,12 @@ func AttackSystem(g *Game, attackerPosition *Position, defenderPosition *Positio
 		}
 
 	}
+
 	//If we somehow don't have an attacker or defender, just leave
 	if attacker == nil || defender == nil {
 		return
 	}
+
 	//Grab the required information
 	defenderArmor := defender.Components[armors].(*Armor)
 	defenderHealth := defender.Components[healths].(*Health)
@@ -54,6 +56,7 @@ func AttackSystem(g *Game, attackerPosition *Position, defenderPosition *Positio
 	if attacker.Components[healths].(*Health).CurrentHealth <= 0 {
 		return
 	}
+
 	//Roll a d10 to hit
 	toHitRoll := GetDiceRoll(10)
 
