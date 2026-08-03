@@ -38,8 +38,8 @@ func NewG3NApp(log *slog.Logger, game *Game, meshes []core.INode) *G3NApp {
 	ctl := camera.NewOrbitControl(cam)
 	ctl.SetTarget(math32.Vector3{40, 0, 25})
 
-	a.Gls().ClearColor(.5, .5, .5, 1)
-	//a.Gls().ClearColor(0, 0, 0, 1)
+	//a.Gls().ClearColor(.5, .5, .5, 1)
+	a.Gls().ClearColor(0, 0, 0, 1)
 
 	onResize := func(_ string, _ any) {
 		w, h := a.GetSize()
@@ -132,8 +132,6 @@ func (g3nApp *G3NApp) SetupUI() {
 	slog.Info("size", "w", width, "h", height)
 	panel := CreatePanel(g3nApp.scene, width, height)
 
-	//CreateLogWindow(panel, width, height)
-	//CreateHUDWindow(panel, width, height)
 	CreateLogWindow(panel, width/2, height/4)
 	CreateHUDWindow(panel, width/2, height/4)
 }
