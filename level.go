@@ -23,16 +23,14 @@ const (
 
 // Level holds the tile information for a complete dungeon level.
 type Level struct {
-	Tiles         []*MapTile
+	Tiles         []*Tile
 	Rooms         []Rect
 	PlayerVisible *fov.View
 	mu            sync.Mutex
 }
 
-// MapTile is a single Tile on a given level
-type MapTile struct {
-	PixelX     int
-	PixelY     int
+// Tile is a single Tile on a given level
+type Tile struct {
 	Blocked    bool
 	Mesh       *graphic.Mesh
 	IsRevealed bool
@@ -158,16 +156,14 @@ func (level *Level) createVerticalTunnel(y1 int, y2 int, x int) {
 }
 
 // createTiles creates a map of all walls as a baseline for carving out a level.
-func (level *Level) createTiles() []*MapTile {
+func (level *Level) createTiles() []*Tile {
 	gd := NewGameData()
-	tiles := make([]*MapTile, levelHeight*gd.ScreenWidth)
+	tiles := make([]*Tile, levelHeight*gd.ScreenWidth)
 	index := 0
 	for x := range gd.ScreenWidth {
 		for y := range levelHeight {
 			index = level.GetIndexFromXY(x, y)
-			tile := MapTile{
-				PixelX:     x * gd.TileWidth,
-				PixelY:     y * gd.TileHeight,
+			tile := Tile{
 				Blocked:    true,
 				Mesh:       CloneAndPosition(wall, x, y),
 				IsRevealed: false,
