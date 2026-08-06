@@ -10,7 +10,8 @@ func main() {
 	// maybe we should have the tile meshes separately like InitializeWorld
 	// or based on the game world, we generated/reference the meshes
 	gameMap := NewGameMap()
-	world, tags, meshes := InitializeWorld(gameMap.CurrentLevel)
+
+	world, tags, meshes := InitializeWorldEntities(gameMap.CurrentLevel)
 
 	game := NewGame(log.With("component", "game"), gameMap, world, tags)
 

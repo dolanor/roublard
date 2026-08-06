@@ -14,7 +14,7 @@ var armors *ecs.Component
 var names *ecs.Component
 var userMessages *ecs.Component
 
-func InitializeWorld(startingLevel *Level) (*ecs.Manager, map[string]ecs.Tag, []core.INode) {
+func InitializeWorldEntities(startingLevel *Level) (*ecs.Manager, map[string]ecs.Tag, []core.INode) {
 	tags := make(map[string]ecs.Tag)
 	manager := ecs.NewManager()
 	meshes := []core.INode{}
