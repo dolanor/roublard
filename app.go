@@ -1,18 +1,24 @@
 package main
 
 import (
+	"errors"
+	"fmt"
 	"log/slog"
 	"time"
 
+	"github.com/dolanor/roublard/assets"
 	"github.com/g3n/engine/app"
 	"github.com/g3n/engine/camera"
 	"github.com/g3n/engine/core"
 	"github.com/g3n/engine/gls"
+	"github.com/g3n/engine/graphic"
 	"github.com/g3n/engine/gui"
 	"github.com/g3n/engine/math32"
 	"github.com/g3n/engine/renderer"
 	"github.com/g3n/engine/window"
 )
+
+var ErrUnknownTileType = errors.New("unknown tile type")
 
 type G3NApp struct {
 	game *Game
@@ -22,10 +28,12 @@ type G3NApp struct {
 	cam         *camera.Camera
 	orthoToggle bool
 
+	materialManager *assets.MaterialManager
+
 	log *slog.Logger
 }
 
-func NewG3NApp(log *slog.Logger, game *Game, meshes []core.INode) *G3NApp {
+func NewG3NApp(log *slog.Logger, game *Game, meshes []core.INode) (*G3NApp, error) {
 	a := app.App(1280, 800, "Roublard")
 	a.SetFullScreen(true)
 
@@ -55,9 +63,27 @@ func NewG3NApp(log *slog.Logger, game *Game, meshes []core.INode) *G3NApp {
 
 	scene.Add(cam)
 
+	mm := assets.NewMaterialManager()
+
+	loadTileMeshes(mm)
+
 	// Add the level meshes
-	for _, t := range game.Map.CurrentLevel.Tiles {
-		scene.Add(t.Mesh)
+	for i, t := range game.Map.CurrentLevel.Tiles {
+
+		var mesh *graphic.Mesh
+		switch t.TileType {
+		case TileTypeWall:
+			mesh = CloneAndPosition(wall, t.X, t.Y)
+		case TileTypeFloor:
+			mesh = CloneAndPosition(floor, t.X, t.Y)
+		default:
+			return nil, fmt.Errorf("%w: %q", ErrUnknownTileType, t.TileType)
+		}
+
+		// FIXME: move mesh to a dedicated g3n app tile type
+		game.Map.CurrentLevel.Tiles[i].Mesh = mesh
+
+		scene.Add(mesh)
 	}
 
 	// Add the characters meshes
@@ -71,8 +97,11 @@ func NewG3NApp(log *slog.Logger, game *Game, meshes []core.INode) *G3NApp {
 		app:   a,
 		scene: scene,
 		cam:   cam,
-		log:   log,
-	}
+
+		materialManager: mm,
+
+		log: log,
+	}, nil
 }
 
 func (g3nApp *G3NApp) UpdateLogicLoop() {
@@ -88,10 +117,10 @@ func (g3nApp *G3NApp) UpdateLogicLoop() {
 func (g3nApp *G3NApp) UpdateLogic() error {
 	g3nApp.game.TurnCounter++
 	if g3nApp.game.Turn == PlayerTurn && g3nApp.game.TurnCounter > 20 {
-		TakePlayerAction(g3nApp.game)
+		g3nApp.TakePlayerAction()
 	}
 	if g3nApp.game.Turn == MonsterTurn {
-		UpdateMonster(g3nApp.game)
+		g3nApp.UpdateMonster()
 	}
 
 	ProcessUserLogG3N(g3nApp.game)

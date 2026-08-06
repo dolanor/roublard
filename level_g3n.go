@@ -10,19 +10,19 @@ import (
 const tileSideLength = 1
 const tileHeight = 0.1
 
-func NewWallMesh(x, y int, mm *assets.MaterialManager) *graphic.Mesh {
+func NewWallMesh(mm *assets.MaterialManager) *graphic.Mesh {
 	height := float32(3)
 	geom := geometry.NewBox(tileSideLength, height, tileSideLength)
 
 	mat := mm.Get(assets.MaterialID("wall"))
 	mesh := graphic.NewMesh(geom, mat)
 
-	mesh.SetPosition(float32(x), float32(height/2), float32(y))
+	mesh.SetPositionY(float32(height / 2))
 	mesh.SetVisible(false)
 	return mesh
 }
 
-func NewFloorMesh(x, y int, mm *assets.MaterialManager) *graphic.Mesh {
+func NewFloorMesh(mm *assets.MaterialManager) *graphic.Mesh {
 	geom := geometry.NewBox(tileSideLength, tileHeight, tileSideLength)
 
 	mesh := graphic.NewMesh(geom, nil)
@@ -30,7 +30,6 @@ func NewFloorMesh(x, y int, mm *assets.MaterialManager) *graphic.Mesh {
 	mat := mm.Get(assets.MaterialID("floor"))
 	mesh.AddGroupMaterial(mat, 2)
 
-	mesh.SetPosition(float32(x), 0, float32(y))
 	mesh.SetVisible(false)
 	return mesh
 }

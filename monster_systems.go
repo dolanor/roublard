@@ -4,7 +4,9 @@ import (
 	"github.com/norendren/go-fov/fov"
 )
 
-func UpdateMonster(game *Game) {
+func (g3nApp *G3NApp) UpdateMonster() {
+	game := g3nApp.game
+
 	l := game.Map.CurrentLevel
 	playerPosition := Position{}
 

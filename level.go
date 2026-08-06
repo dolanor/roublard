@@ -4,7 +4,7 @@ import (
 	"log"
 	"sync"
 
-	"github.com/dolanor/roublard/ebitenutil"
+	"github.com/dolanor/roublard/assets"
 	"github.com/g3n/engine/graphic"
 	"github.com/norendren/go-fov/fov"
 )
@@ -31,7 +31,10 @@ type Level struct {
 
 // Tile is a single Tile on a given level
 type Tile struct {
-	Blocked    bool
+	X       int
+	Y       int
+	Blocked bool
+	// FIXME: move this field into a dedicated g3n tile type
 	Mesh       *graphic.Mesh
 	IsRevealed bool
 	IsWall     bool
@@ -40,7 +43,6 @@ type Tile struct {
 
 // NewLevel creates a new game level in a dungeon.
 func NewLevel() *Level {
-	loadTileMeshes()
 
 	l := Level{
 		Rooms:         []Rect{},
@@ -52,18 +54,18 @@ func NewLevel() *Level {
 	return &l
 }
 
-func loadTileMeshes() {
+func loadTileMeshes(mm *assets.MaterialManager) {
 	if floor != nil && wall != nil {
 		return
 	}
 
 	var err error
-	floor, err = ebitenutil.NewMeshFromFile("assets/floor.png")
+	floor, err = NewMeshFromFile(mm, "assets/floor.png")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	wall, err = ebitenutil.NewMeshFromFile("assets/wall.png")
+	wall, err = NewMeshFromFile(mm, "assets/wall.png")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -137,7 +139,6 @@ func (level *Level) createHorizontalTunnel(x1 int, x2 int, y int) {
 			level.Tiles[index].Blocked = false
 			level.Tiles[index].IsWall = false
 			level.Tiles[index].TileType = TileTypeFloor
-			level.Tiles[index].Mesh = CloneAndPosition(floor, x, y)
 		}
 	}
 }
@@ -150,7 +151,6 @@ func (level *Level) createVerticalTunnel(y1 int, y2 int, x int) {
 			level.Tiles[index].Blocked = false
 			level.Tiles[index].IsWall = false
 			level.Tiles[index].TileType = TileTypeFloor
-			level.Tiles[index].Mesh = CloneAndPosition(floor, x, y)
 		}
 	}
 }
@@ -164,8 +164,9 @@ func (level *Level) createTiles() []*Tile {
 		for y := range levelHeight {
 			index = level.GetIndexFromXY(x, y)
 			tile := Tile{
+				X:          x,
+				Y:          y,
 				Blocked:    true,
-				Mesh:       CloneAndPosition(wall, x, y),
 				IsRevealed: false,
 				TileType:   TileTypeWall,
 				IsWall:     true,
@@ -182,7 +183,6 @@ func (level *Level) createRoom(room Rect) {
 			index := level.GetIndexFromXY(x, y)
 			level.Tiles[index].Blocked = false
 			level.Tiles[index].TileType = TileTypeFloor
-			level.Tiles[index].Mesh = CloneAndPosition(floor, x, y)
 			level.Tiles[index].IsWall = false
 		}
 	}

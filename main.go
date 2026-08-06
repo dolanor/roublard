@@ -14,7 +14,10 @@ func main() {
 
 	game := NewGame(log.With("component", "game"), gameMap, world, tags)
 
-	app := NewG3NApp(log.With("component", "g3n"), game, meshes)
+	app, err := NewG3NApp(log.With("component", "g3n"), game, meshes)
+	if err != nil {
+		panic(err)
+	}
 
 	app.SetupKeyboardEventHandlers()
 	app.SetupUI()

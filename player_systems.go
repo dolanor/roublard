@@ -1,6 +1,9 @@
 package main
 
-func TakePlayerAction(g *Game) {
+func (g3nApp *G3NApp) TakePlayerAction() {
+	// TODO: rename g -> game
+	g := g3nApp.game
+
 	players := g.WorldTags["players"]
 	turnTaken := false
 
@@ -32,7 +35,7 @@ func TakePlayerAction(g *Game) {
 			}
 		}
 
-		updateMapVisibility(level)
+		g3nApp.updateMapVisibility(level)
 	}
 
 	if x != 0 || y != 0 || turnTaken {

@@ -5,7 +5,6 @@ import (
 	"github.com/g3n/engine/window"
 
 	"github.com/dolanor/roublard/assets"
-	"github.com/dolanor/roublard/ebitenutil"
 )
 
 type Move string
@@ -17,10 +16,10 @@ const (
 	MoveDown  Move = "move_down"
 )
 
-func updateMapVisibility(level *Level) {
+func (g3nApp *G3NApp) updateMapVisibility(level *Level) {
 	gd := NewGameData()
-	solidMat := ebitenutil.MaterialManager.Get(assets.MaterialID("wall"))
-	wireframeMat := ebitenutil.MaterialManager.Get(assets.MaterialID("wallwf"))
+	solidMat := g3nApp.materialManager.Get(assets.MaterialID("wall"))
+	wireframeMat := g3nApp.materialManager.Get(assets.MaterialID("wallwf"))
 	_, _ = solidMat, wireframeMat
 	// We decide to check for every tile in the level if it should be rendered or not
 	for x := 0; x < gd.ScreenWidth; x++ {
