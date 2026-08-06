@@ -6,7 +6,6 @@ import (
 	"log/slog"
 	"time"
 
-	"codeberg.org/dolanor/roublard/assets"
 	"github.com/g3n/engine/app"
 	"github.com/g3n/engine/camera"
 	"github.com/g3n/engine/core"
@@ -16,6 +15,8 @@ import (
 	"github.com/g3n/engine/math32"
 	"github.com/g3n/engine/renderer"
 	"github.com/g3n/engine/window"
+
+	"codeberg.org/dolanor/roublard/assets"
 )
 
 var ErrUnknownTileType = errors.New("unknown tile type")

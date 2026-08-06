@@ -1,8 +1,9 @@
 package main
 
 import (
-	"codeberg.org/dolanor/roublard/assets"
 	"github.com/g3n/engine/graphic"
+
+	"codeberg.org/dolanor/roublard/assets"
 )
 
 func NewMeshFromFile(mm *assets.MaterialManager, imgPath string) (*graphic.Mesh, error) {

@@ -4,9 +4,10 @@ import (
 	"log"
 	"sync"
 
-	"codeberg.org/dolanor/roublard/assets"
 	"github.com/g3n/engine/graphic"
 	"github.com/norendren/go-fov/fov"
+
+	"codeberg.org/dolanor/roublard/assets"
 )
 
 type TileType int
