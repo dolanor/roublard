@@ -7,7 +7,6 @@ import (
 )
 
 func NewMeshFromFile(mm *assets.MaterialManager, imgPath string) (*graphic.Mesh, error) {
-
 	var mesh *graphic.Mesh
 
 	switch imgPath {

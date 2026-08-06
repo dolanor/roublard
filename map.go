@@ -18,5 +18,4 @@ func NewGameMap() *GameMap {
 		CurrentLevel: l,
 	}
 	return gm
-
 }

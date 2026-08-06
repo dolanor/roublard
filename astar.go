@@ -53,6 +53,7 @@ func isInSlice(s []*node, target *node) bool {
 			return true
 		}
 	}
+
 	return false
 }
 
@@ -128,6 +129,7 @@ func (as AStar) GetPath(level *Level, start *Position, end *Position) []Position
 			}
 
 		}
+
 		if currentNode.Position.Y < gd.ScreenHeight {
 			tile := level.Tiles[level.GetIndexFromXY(currentNode.Position.X, currentNode.Position.Y+1)]
 			if tile.TileType != TileTypeWall {
@@ -140,8 +142,8 @@ func (as AStar) GetPath(level *Level, start *Position, end *Position) []Position
 				edges = append(edges, newNode)
 
 			}
-
 		}
+
 		if currentNode.Position.X > 0 {
 			tile := level.Tiles[level.GetIndexFromXY(currentNode.Position.X-1, currentNode.Position.Y)]
 			if tile.TileType != TileTypeWall {
@@ -152,10 +154,9 @@ func (as AStar) GetPath(level *Level, start *Position, end *Position) []Position
 				}
 				newNode := newNode(currentNode, &leftNodePosition)
 				edges = append(edges, newNode)
-
 			}
-
 		}
+
 		if currentNode.Position.X < gd.ScreenWidth {
 			tile := level.Tiles[level.GetIndexFromXY(currentNode.Position.X+1, currentNode.Position.Y)]
 			if tile.TileType != TileTypeWall {
@@ -166,9 +167,7 @@ func (as AStar) GetPath(level *Level, start *Position, end *Position) []Position
 				}
 				newNode := newNode(currentNode, &rightNodePosition)
 				edges = append(edges, newNode)
-
 			}
-
 		}
 
 		//Now we iterate through the edges and put them in the open list.
@@ -198,7 +197,6 @@ func (as AStar) GetPath(level *Level, start *Position, end *Position) []Position
 			}
 			openList = append(openList, edge)
 		}
-
 	}
 
 	return nil

@@ -188,11 +188,13 @@ func (level *Level) createRoom(room Rect) {
 		}
 	}
 }
+
 func (*Level) InBounds(x, y int) bool {
 	gd := NewGameData()
 	if x < 0 || x > gd.ScreenWidth || y < 0 || y > levelHeight {
 		return false
 	}
+
 	return true
 }
 

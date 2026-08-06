@@ -34,7 +34,6 @@ func AttackSystem(g *Game, attackerPosition *Position, defenderPosition *Positio
 			//This is the defender
 			defender = cbt
 		}
-
 	}
 
 	//If we somehow don't have an attacker or defender, just leave
@@ -84,7 +83,6 @@ func AttackSystem(g *Game, attackerPosition *Position, defenderPosition *Positio
 				g.Turn = GameOver
 			}
 		}
-
 	} else {
 		attackerMessage.AttackMessage = fmt.Sprintf("%s swings %s at %s and misses.", attackerName, attackerWeapon.Name, defenderName)
 	}

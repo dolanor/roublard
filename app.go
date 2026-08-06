@@ -129,7 +129,6 @@ func (g3nApp *G3NApp) UpdateLogic() error {
 	ProcessHUDG3N(g3nApp.game)
 
 	return nil
-
 }
 
 // Update is the rendering update callback for g3n.
