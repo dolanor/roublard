@@ -80,12 +80,12 @@ func InitializeWorldEntities(startingLevel *Level) (*ecs.Manager, map[string]ecs
 			mobSpawn := GetDiceRoll(2)
 
 			if mobSpawn == 1 {
-				orcMesh := loadGoblinJanitorMesh()
-				orcMesh.SetVisible(false)
-				meshes = append(meshes, orcMesh)
+				goblinJanitorMesh := loadGoblinJanitorMesh()
+				goblinJanitorMesh.SetVisible(false)
+				meshes = append(meshes, goblinJanitorMesh)
 
-				newMonster(manager, orcMesh,
-					mX, mY, orcMesh.Position().Z,
+				newMonster(manager, goblinJanitorMesh,
+					mX, mY, goblinJanitorMesh.Position().Z,
 					30, 30,
 					&MeleeWeapon{
 						Name:       "Broom of Doom",
