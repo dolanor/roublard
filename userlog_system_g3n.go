@@ -37,7 +37,7 @@ func CreateLogWindow(panel *gui.Panel, width, height int) {
 }
 
 func ProcessUserLogG3N(g *Game) {
-	currentMessages := make([]string, 0, 5)
+	var currentMessages []string
 
 	for _, m := range g.World.Query(g.WorldTags["messengers"]) {
 		messages := m.Components[userMessages].(*UserMessage)

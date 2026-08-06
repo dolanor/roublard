@@ -65,8 +65,8 @@ type AStar struct{}
 func (as AStar) GetPath(level *Level, start *Position, end *Position) []Position {
 	gd := NewGameData()
 
-	openList := make([]*node, 0)
-	closedList := make([]*node, 0)
+	var openList []*node
+	var closedList []*node
 
 	//Create our starting point
 	startNode := newNode(nil, start)
@@ -99,7 +99,7 @@ func (as AStar) GetPath(level *Level, start *Position, end *Position) []Position
 		//Check to see if we reached our end
 		//If so, we are done here
 		if currentNode.isEqual(endNodePlaceholder) {
-			path := make([]Position, 0)
+			var path []Position
 			current := currentNode
 			for current != nil {
 				path = append(path, *current.Position)
@@ -112,7 +112,7 @@ func (as AStar) GetPath(level *Level, start *Position, end *Position) []Position
 
 		//Ok, if we are here, we are not finished yet
 
-		edges := make([]*node, 0)
+		var edges []*node
 		//Now we get each node in the four cardinal directions
 		//Note:  If you wish to add Diagonal movement, you can do so by getting all 8 positions
 		if currentNode.Position.Y > 0 {
