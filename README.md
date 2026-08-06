@@ -1,5 +1,7 @@
 # Roublard
 
+![Roublard screen shot](./.meta/assets/sshot.png)
+
 [roublard.low.webm](https://github.com/user-attachments/assets/6a3987a4-523d-4038-a618-0758c64e9afe)
 
 [Better quality video](https://youtu.be/C0HtNDdppLU)
