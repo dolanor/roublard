@@ -22,7 +22,7 @@ func loadElfMesh() core.INode {
 	mesh := loadMesh(ModelFilePathElfWizard, 0, 0.01, 0.7+tileHeight)
 
 	// add torch light
-	pointLight := light.NewPoint(&math32.Color{1, .5, 0}, 30)
+	pointLight := light.NewPoint(&math32.Color{R: 1, G: .5}, 30)
 	pointLight.SetPosition(1, 1, 2)
 
 	meshNode := mesh.GetNode()

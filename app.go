@@ -42,10 +42,11 @@ func NewG3NApp(log *slog.Logger, game *Game, meshes []core.INode) (*G3NApp, erro
 
 	cam := camera.New(0)
 	cam.SetPosition(40, 50, 25)
-	cam.LookAt(&math32.Vector3{40, 0, 25}, &math32.Vector3{0, 0, -1})
+	// FIXME: switch Y and Z at some point to make it more classical
+	cam.LookAt(&math32.Vector3{X: 40, Z: 25}, &math32.Vector3{X: 0, Y: 0, Z: -1})
 
 	ctl := camera.NewOrbitControl(cam)
-	ctl.SetTarget(math32.Vector3{40, 0, 25})
+	ctl.SetTarget(math32.Vector3{X: 40, Z: 25})
 
 	//a.Gls().ClearColor(.5, .5, .5, 1)
 	a.Gls().ClearColor(0, 0, 0, 1)
