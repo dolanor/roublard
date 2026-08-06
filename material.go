@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/dolanor/roublard/assets"
+	"codeberg.org/dolanor/roublard/assets"
 	"github.com/g3n/engine/graphic"
 )
 

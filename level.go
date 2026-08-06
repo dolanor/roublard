@@ -4,7 +4,7 @@ import (
 	"log"
 	"sync"
 
-	"github.com/dolanor/roublard/assets"
+	"codeberg.org/dolanor/roublard/assets"
 	"github.com/g3n/engine/graphic"
 	"github.com/norendren/go-fov/fov"
 )

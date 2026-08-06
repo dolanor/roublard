@@ -4,7 +4,7 @@ import (
 	"github.com/g3n/engine/geometry"
 	"github.com/g3n/engine/graphic"
 
-	"github.com/dolanor/roublard/assets"
+	"codeberg.org/dolanor/roublard/assets"
 )
 
 const tileSideLength = 1

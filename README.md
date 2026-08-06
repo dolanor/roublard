@@ -28,7 +28,7 @@ It includes assets from PolyHaven and @mz4250.
 - run the project
 
 ```
-git clone https://github.com/dolanor/roublard
+git clone https://codeberg.org/dolanor/roublard
 cd roublard
 go run .
 ```

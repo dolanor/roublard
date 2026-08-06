@@ -6,7 +6,7 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/dolanor/roublard/assets"
+	"codeberg.org/dolanor/roublard/assets"
 	"github.com/g3n/engine/app"
 	"github.com/g3n/engine/camera"
 	"github.com/g3n/engine/core"

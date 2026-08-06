@@ -1,4 +1,4 @@
-module github.com/dolanor/roublard
+module codeberg.org/dolanor/roublard
 
 go 1.24.6
 

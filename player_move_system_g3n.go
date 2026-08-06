@@ -4,7 +4,7 @@ import (
 	"github.com/g3n/engine/camera"
 	"github.com/g3n/engine/window"
 
-	"github.com/dolanor/roublard/assets"
+	"codeberg.org/dolanor/roublard/assets"
 )
 
 type Move string
