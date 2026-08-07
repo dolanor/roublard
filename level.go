@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"sync"
 
 	"github.com/g3n/engine/graphic"
@@ -11,9 +10,6 @@ import (
 )
 
 type TileType int
-
-var floor *graphic.Mesh
-var wall *graphic.Mesh
 
 var levelHeight int
 
@@ -44,7 +40,6 @@ type Tile struct {
 
 // NewLevel creates a new game level in a dungeon.
 func NewLevel() *Level {
-
 	l := Level{
 		Rooms:         []Rect{},
 		PlayerVisible: fov.New(),
@@ -55,21 +50,18 @@ func NewLevel() *Level {
 	return &l
 }
 
-func loadTileMeshes(mm *assets.MaterialManager) {
-	if floor != nil && wall != nil {
-		return
+func loadTileMeshes(mm *assets.MaterialManager) (floor, wall *graphic.Mesh, err error) {
+	floor, err = NewTileMeshFromFile(mm, "assets/floor.png")
+	if err != nil {
+		return floor, wall, nil
 	}
 
-	var err error
-	floor, err = NewMeshFromFile(mm, "assets/floor.png")
+	wall, err = NewTileMeshFromFile(mm, "assets/wall.png")
 	if err != nil {
-		log.Fatal(err)
+		return floor, wall, nil
 	}
 
-	wall, err = NewMeshFromFile(mm, "assets/wall.png")
-	if err != nil {
-		log.Fatal(err)
-	}
+	return floor, wall, nil
 }
 
 // GetIndexFromXY gets the index of the map array from a given X,Y TILE coordinate.
@@ -87,6 +79,7 @@ func (level *Level) GenerateLevelTiles() {
 		maxRooms = 30
 	)
 
+	// FIXME: use the same game data and save it in the game entity
 	gd := NewGameData()
 	levelHeight = gd.ScreenHeight - gd.UIHeight
 	tiles := level.createTiles()

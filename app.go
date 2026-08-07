@@ -67,7 +67,10 @@ func NewG3NApp(log *slog.Logger, game *Game, meshes []core.INode) (*G3NApp, erro
 
 	mm := assets.NewMaterialManager()
 
-	loadTileMeshes(mm)
+	floor, wall, err := loadTileMeshes(mm)
+	if err != nil {
+		return nil, err
+	}
 
 	// Add the level meshes
 	for i, t := range game.Map.CurrentLevel.Tiles {

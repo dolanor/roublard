@@ -6,7 +6,7 @@ import (
 	"codeberg.org/dolanor/roublard/assets"
 )
 
-func NewMeshFromFile(mm *assets.MaterialManager, imgPath string) (*graphic.Mesh, error) {
+func NewTileMeshFromFile(mm *assets.MaterialManager, imgPath string) (*graphic.Mesh, error) {
 	var mesh *graphic.Mesh
 
 	switch imgPath {
